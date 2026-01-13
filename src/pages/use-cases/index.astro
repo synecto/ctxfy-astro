@@ -1,0 +1,217 @@
+---
+import groq from "groq";
+import Layout from "../../layouts/Layout.astro";
+import { sanity } from "../../lib/sanity";
+
+// 1) Достаём use-cases для карточек
+const useCases = await sanity.fetch(groq`*[_type=="useCase" && defined(slug.current)]
+| order(_createdAt desc) {
+  title,
+  "slug": slug.current,
+  heroHeadline,
+  subheadline,
+  stakes,
+  timeToValue,
+  proofPoints,
+  momentBullets
+}`);
+
+// 2) Собираем простые "теги" для фильтра — по stakes (и можно расширить позже)
+const STAKES = ["low", "medium", "high", "critical"];
+const stakesCounts = STAKES.map((s) => ({
+    stake: s,
+    count: useCases.filter((u: any) => u.stakes === s).length,
+}));
+
+function safeText(s?: string) {
+    return (s ?? "").trim();
+}
+---
+
+<Layout title="Use cases">
+    <main class="uc-page">
+        <header class="uc-hero">
+            <h1>Use cases</h1>
+            <p class="uc-sub">
+                Choose a scenario and land on a page built for that moment: problem → proof → demo/try-free.
+            </p>
+        </header>
+
+        <section class="uc-controls" aria-label="Filters">
+            <div class="uc-search">
+                <label class="uc-label" for="uc-search">Search</label>
+                <input
+                        id="uc-search"
+                        class="uc-input"
+                        type="search"
+                        placeholder="Search by title, problem, keywords…"
+                        autocomplete="off"
+                />
+            </div>
+
+            <div class="uc-stakes">
+                <div class="uc-label">Stakes</div>
+                <div class="uc-chips" role="group" aria-label="Stakes filter">
+                    <button class="uc-chip is-active" type="button" data-stake="all">
+                        All <span class="uc-chip-count">({useCases.length})</span>
+                    </button>
+
+                    {stakesCounts.map((x) => (
+                            <button class="uc-chip" type="button" data-stake={x.stake}>
+                                {x.stake} <span class="uc-chip-count">({x.count})</span>
+                            </button>
+                    ))}
+                </div>
+            </div>
+        </section>
+
+        <section class="uc-grid" aria-label="Use cases list">
+            {useCases.map((uc: any) => (
+                    <article
+                            class="uc-card"
+                            data-title={safeText(uc.title).toLowerCase()}
+                            data-headline={safeText(uc.heroHeadline).toLowerCase()}
+                            data-subheadline={safeText(uc.subheadline).toLowerCase()}
+                            data-stake={uc.stakes || "unknown"}
+                            data-slug={uc.slug}
+                    >
+                        <a class="uc-card-link" href={`/use-cases/${uc.slug}/`} aria-label={`Open ${uc.title}`}>
+                            <div class="uc-card-top">
+                                <div class="uc-meta">
+                                    <span class={`uc-badge stake-${uc.stakes || "unknown"}`}>{uc.stakes || "unknown"}</span>
+                                    {uc.timeToValue ? <span class="uc-ttv">TTFV: {uc.timeToValue}</span> : null}
+                                </div>
+
+                                <h2 class="uc-title">{uc.title}</h2>
+                                {uc.heroHeadline ? <p class="uc-headline">{uc.heroHeadline}</p> : null}
+                                {uc.subheadline ? <p class="uc-desc">{uc.subheadline}</p> : null}
+                            </div>
+
+                            <div class="uc-card-mid">
+                                {uc.momentBullets?.length ? (
+                                        <ul class="uc-bullets">
+                                            {uc.momentBullets.slice(0, 3).map((b: string) => (
+                                                    <li>{b}</li>
+                                            ))}
+                                        </ul>
+                                ) : (
+                                        <p class="uc-muted">Add “Moment / Trigger bullets” in Sanity to improve this card.</p>
+                                )}
+                            </div>
+
+                            <div class="uc-card-bottom">
+                                {uc.proofPoints?.length ? (
+                                        <ul class="uc-proof">
+                                            {uc.proofPoints.slice(0, 2).map((p: string) => (
+                                                    <li>{p}</li>
+                                            ))}
+                                        </ul>
+                                ) : (
+                                        <span class="uc-muted">Add proof points to strengthen conversion.</span>
+                                )}
+
+                                <span class="uc-cta">
+                Open →
+              </span>
+                            </div>
+                        </a>
+                    </article>
+            ))}
+        </section>
+
+        <p class="uc-empty" hidden>
+            No use cases match your filters.
+        </p>
+    </main>
+
+    <script is:inline>
+        const searchEl = document.getElementById("uc-search");
+        const chips = Array.from(document.querySelectorAll(".uc-chip"));
+        const cards = Array.from(document.querySelectorAll(".uc-card"));
+        const empty = document.querySelector(".uc-empty");
+
+        let activeStake = "all";
+        let query = "";
+
+        function matchesCard(card) {
+            const stake = card.getAttribute("data-stake") || "unknown";
+            const haystack = [
+                card.getAttribute("data-title"),
+                card.getAttribute("data-headline"),
+                card.getAttribute("data-subheadline"),
+            ].join(" ");
+
+            const stakeOk = activeStake === "all" ? true : stake === activeStake;
+            const queryOk = query.length === 0 ? true : haystack.includes(query);
+            return stakeOk && queryOk;
+        }
+
+        function render() {
+            let shown = 0;
+            for (const c of cards) {
+                const ok = matchesCard(c);
+                c.style.display = ok ? "" : "none";
+                if (ok) shown++;
+            }
+            empty.hidden = shown !== 0;
+        }
+
+        chips.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                chips.forEach((b) => b.classList.remove("is-active"));
+                btn.classList.add("is-active");
+                activeStake = btn.getAttribute("data-stake") || "all";
+                render();
+            });
+        });
+
+        searchEl?.addEventListener("input", (e) => {
+            query = (e.target.value || "").trim().toLowerCase();
+            render();
+        });
+
+        render();
+    </script>
+
+    <style>
+        .uc-page { max-width: 1100px; margin: 0 auto; padding: 32px 20px 64px; }
+        .uc-hero h1 { font-size: 40px; margin: 0 0 8px; }
+        .uc-sub { margin: 0; opacity: 0.8; max-width: 70ch; }
+
+        .uc-controls { display: grid; grid-template-columns: 1fr; gap: 18px; margin: 28px 0 22px; }
+        .uc-label { font-size: 12px; letter-spacing: 0.02em; text-transform: uppercase; opacity: 0.75; }
+        .uc-search { display: grid; gap: 8px; }
+        .uc-input { padding: 12px 12px; font-size: 16px; border-radius: 12px; border: 1px solid rgba(0,0,0,.12); width: 100%; }
+        .uc-stakes { display: grid; gap: 8px; }
+
+        .uc-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .uc-chip { border: 1px solid rgba(0,0,0,.12); border-radius: 999px; padding: 8px 10px; font-size: 14px; background: transparent; cursor: pointer; }
+        .uc-chip.is-active { border-color: rgba(0,0,0,.35); }
+        .uc-chip-count { opacity: 0.75; }
+
+        .uc-grid { display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: 14px; }
+        @media (min-width: 760px) { .uc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (min-width: 1040px) { .uc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+        .uc-card { border: 1px solid rgba(0,0,0,.12); border-radius: 16px; overflow: hidden; }
+        .uc-card-link { display: grid; gap: 10px; padding: 16px; text-decoration: none; color: inherit; height: 100%; }
+        .uc-card-link:hover { background: rgba(0,0,0,.02); }
+
+        .uc-meta { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+        .uc-badge { font-size: 12px; padding: 4px 8px; border-radius: 999px; border: 1px solid rgba(0,0,0,.14); }
+        .uc-ttv { font-size: 12px; opacity: 0.75; }
+
+        .uc-title { font-size: 18px; margin: 0 0 6px; }
+        .uc-headline { margin: 0 0 6px; font-weight: 600; opacity: 0.9; }
+        .uc-desc { margin: 0; opacity: 0.8; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .uc-bullets { margin: 8px 0 0; padding-left: 18px; opacity: 0.9; }
+        .uc-proof { margin: 0; padding-left: 18px; opacity: 0.85; }
+        .uc-muted { opacity: 0.7; font-size: 13px; }
+
+        .uc-card-bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; margin-top: 8px; }
+        .uc-cta { font-weight: 600; opacity: 0.9; }
+
+        .uc-empty { margin-top: 18px; opacity: 0.8; }
+    </style>
+</Layout>

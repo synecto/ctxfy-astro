@@ -9,6 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@amplitude/analytics-browser": "^2.33.1",
     "@sanity/client": "^7.14.0",
     "astro": "^5.16.9",
     "groq": "^5.2.0"

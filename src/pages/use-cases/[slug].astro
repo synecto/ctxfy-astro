@@ -1,0 +1,135 @@
+---
+import groq from "groq";
+import Layout from "../../layouts/Layout.astro";
+import { sanity } from "../../lib/sanity";
+
+export async function getStaticPaths() {
+    const slugs = await sanity.fetch(groq`*[_type=="useCase" && defined(slug.current)]{ "slug": slug.current }`);
+    return slugs.map((s: any) => ({ params: { slug: s.slug } }));
+}
+
+const { slug } = Astro.params;
+
+const useCase = await sanity.fetch(
+    groq`*[_type=="useCase" && slug.current==$slug][0]{
+    title,
+    "slug": slug.current,
+    heroHeadline,
+    subheadline,
+    proofPoints,
+    momentBullets,
+    stakes,
+    ahaMoment,
+    timeToValue,
+    firstRunChecklist,
+    howItWorks[]{ title, description },
+    evidenceBlocks[]{
+      type, claim, measurement,
+      asset,
+      linkToExample->{
+        title,
+        "slug": slug.current
+      }
+    },
+    faq[]{ q, a },
+    primaryCta{ label, href },
+    secondaryCta{ label, href },
+    relatedUseCases[]->{
+      title,
+      "slug": slug.current,
+      heroHeadline
+    }
+  }`,
+    { slug }
+);
+---
+
+<Layout title={useCase?.title ?? "Use case"}>
+    <main data-use-case={useCase.slug}>
+        <section>
+            <h1>{useCase.heroHeadline}</h1>
+            <p>{useCase.subheadline}</p>
+
+            <div>
+                <a href={useCase.primaryCta.href} data-cta="primary">{useCase.primaryCta.label}</a>
+                {useCase.secondaryCta?.href && (
+                        <a href={useCase.secondaryCta.href} data-cta="secondary">{useCase.secondaryCta.label}</a>
+                )}
+            </div>
+
+            {useCase.proofPoints?.length ? (
+                    <ul>
+                        {useCase.proofPoints.map((p: string) => <li>{p}</li>)}
+                    </ul>
+            ) : null}
+        </section>
+
+        <section>
+            <h2>When this hits</h2>
+            <ul>
+                {useCase.momentBullets?.map((b: string) => <li>{b}</li>)}
+            </ul>
+            <p><strong>Stakes:</strong> {useCase.stakes}</p>
+        </section>
+
+        <section>
+            <h2>Value in {useCase.timeToValue}</h2>
+            <p><strong>Aha:</strong> {useCase.ahaMoment}</p>
+            <ol>
+                {useCase.firstRunChecklist?.map((s: string) => <li>{s}</li>)}
+            </ol>
+        </section>
+
+        <section>
+            <h2>How it works</h2>
+            <ol>
+                {useCase.howItWorks?.map((s: any) => (
+                        <li>
+                            <strong>{s.title}</strong>
+                            <p>{s.description}</p>
+                        </li>
+                ))}
+            </ol>
+        </section>
+
+        {useCase.evidenceBlocks?.length ? (
+                <section>
+                    <h2>Proof</h2>
+                    <ul>
+                        {useCase.evidenceBlocks.map((e: any) => (
+                                <li>
+                                    <strong>{e.claim}</strong>
+                                    {e.measurement ? <p>{e.measurement}</p> : null}
+                                    {e.linkToExample?.slug ? <a href={`/examples/${e.linkToExample.slug}/`}>See example</a> : null}
+                                </li>
+                        ))}
+                    </ul>
+                </section>
+        ) : null}
+
+        {useCase.faq?.length ? (
+                <section>
+                    <h2>FAQ</h2>
+                    {useCase.faq.map((f: any) => (
+                            <details>
+                                <summary>{f.q}</summary>
+                                <p>{f.a}</p>
+                            </details>
+                    ))}
+                </section>
+        ) : null}
+
+        {useCase.relatedUseCases?.length ? (
+                <section>
+                    <h2>Related use cases</h2>
+                    <ul>
+                        {useCase.relatedUseCases.map((r: any) => (
+                                <li>
+                                    <a href={`/use-cases/${r.slug}/`}>{r.title}</a>
+                                </li>
+                        ))}
+                    </ul>
+                </section>
+        ) : null}
+    </main>
+</Layout>

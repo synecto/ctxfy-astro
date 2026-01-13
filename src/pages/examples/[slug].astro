@@ -1,0 +1,50 @@
+---
+import groq from "groq";
+import Layout from "../../layouts/Layout.astro";
+import { sanity } from "../../lib/sanity";
+
+export async function getStaticPaths() {
+    const slugs = await sanity.fetch(groq`*[_type=="example" && defined(slug.current)]{ "slug": slug.current }`);
+    return slugs.map((s: any) => ({ params: { slug: s.slug } }));
+}
+
+const { slug } = Astro.params;
+
+const ex = await sanity.fetch(
+    groq`*[_type=="example" && slug.current==$slug][0]{
+    title,
+    "slug": slug.current,
+    summary,
+    before,
+    after,
+    steps,
+    useCase->{
+      title,
+      "slug": slug.current
+    },
+    cta{ label, href }
+  }`,
+    { slug }
+);
+---
+
+<Layout title={ex?.title ?? "Example"}>
+    <main>
+        <p><a href={`/use-cases/${ex.useCase.slug}/`}>← Back to use case: {ex.useCase.title}</a></p>
+        <h1>{ex.title}</h1>
+        {ex.summary ? <p>{ex.summary}</p> : null}
+
+        <h2>Before</h2>
+        <p>{ex.before}</p>
+
+        <h2>After</h2>
+        <p>{ex.after}</p>
+
+        <h2>Steps</h2>
+        <ol>
+            {ex.steps?.map((s: string) => <li>{s}</li>)}
+        </ol>
+
+        {ex.cta?.href ? <a href={ex.cta.href}>{ex.cta.label}</a> : null}
+    </main>
+</Layout>

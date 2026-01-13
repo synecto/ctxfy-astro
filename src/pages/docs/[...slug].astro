@@ -1,0 +1,168 @@
+---
+import groq from "groq";
+import Layout from "../../layouts/Layout.astro";
+import { sanity } from "../../lib/sanity";
+import { toHTML } from "@portabletext/to-html";
+
+const slugParam = Astro.params.slug;
+const slugPath = Array.isArray(slugParam) ? slugParam : [slugParam];
+
+const doc = await sanity.fetch(
+    groq`*[_type=="doc" && slugPath==$slugPath][0]{
+    title,
+    summary,
+    body,
+    slugPath,
+    order,
+    category->{
+      title,
+      "slug": slug.current,
+      order
+    },
+    relatedUseCases[]->{
+      title,
+      "slug": slug.current
+    },
+    meta{seoTitle, seoDescription}
+  }`,
+    { slugPath }
+);
+
+if (!doc) return Astro.redirect("/docs/");
+
+// Sidebar: all categories + docs
+const categories = await sanity.fetch(groq`*[_type=="docCategory" && defined(slug.current)]
+| order(order asc, title asc){
+  title,
+  "slug": slug.current,
+  order
+}`);
+
+const docs = await sanity.fetch(groq`*[_type=="doc" && defined(slugPath)]
+| order(order asc, title asc){
+  title,
+  slugPath,
+  category->{"slug": slug.current, title}
+}`);
+
+function toPath(p: string[]) {
+    return "/docs/" + p.map(encodeURIComponent).join("/") + "/";
+}
+
+const html = toHTML(doc.body || []);
+const seoTitle = doc.meta?.seoTitle || `${doc.title} — Docs`;
+const seoDesc = doc.meta?.seoDescription || doc.summary || "Documentation page.";
+---
+
+<Layout title={seoTitle} description={seoDesc}>
+    <main class="wrap">
+        <aside class="side">
+            <div class="side-top">
+                <a class="side-home" href="/docs/" data-track="docs_nav_home">Docs</a>
+                <input id="q" class="side-q" placeholder="Search…" />
+            </div>
+
+            <nav class="side-nav" aria-label="Docs">
+                {categories.map((c: any) => (
+                        <details open={c.slug === doc.category?.slug}>
+                            <summary>{c.title}</summary>
+                            <div class="side-list" data-cat={c.slug}>
+                                {docs
+                                    .filter((d: any) => d.category?.slug === c.slug)
+                                    .map((d: any) => {
+                                        const active = toPath(d.slugPath) === toPath(doc.slugPath);
+                                        return (
+                                                <a
+                                                        class={`side-link ${active ? "active" : ""}`}
+                                                        href={toPath(d.slugPath)}
+                                                        data-track="docs_nav_open"
+                                                        data-track-props={JSON.stringify({ path: d.slugPath.join("/") })}
+                                                >
+                                                    {d.title}
+                                                </a>
+                                        );
+                                    })}
+                            </div>
+                        </details>
+                ))}
+            </nav>
+        </aside>
+
+        <article class="content">
+            <header class="content-head">
+                <h1>{doc.title}</h1>
+                {doc.summary ? <p class="muted">{doc.summary}</p> : null}
+
+                <div class="content-cta">
+                    <a class="btn primary" href="/signup" data-track="docs_try_free">Try free</a>
+                    <a class="btn" href="/use-cases/" data-track="docs_use_cases">Use cases</a>
+                </div>
+            </header>
+
+            <div class="prose" set:html={html} />
+
+            {doc.relatedUseCases?.length ? (
+                    <section class="related">
+                        <h2>Related use cases</h2>
+                        <div class="chips">
+                            {doc.relatedUseCases.map((u: any) => (
+                                    <a
+                                            class="chip"
+                                            href={`/use-cases/${u.slug}/`}
+                                            data-track="docs_related_use_case"
+                                            data-track-props={JSON.stringify({ useCase: u.slug })}
+                                    >
+                                        {u.title} →
+                                    </a>
+                            ))}
+                        </div>
+                    </section>
+            ) : null}
+        </article>
+    </main>
+
+    <script is:inline>
+        const q = document.getElementById("q");
+        const links = Array.from(document.querySelectorAll(".side-link"));
+        function norm(s){ return (s||"").toLowerCase().trim(); }
+        function apply(){
+            const qv = norm(q.value);
+            for (const el of links){
+                const ok = !qv || norm(el.textContent).includes(qv);
+                el.style.display = ok ? "" : "none";
+            }
+        }
+        q.addEventListener("input", apply);
+    </script>
+
+    <style>
+        .wrap{max-width:1200px;margin:0 auto;padding:0 20px 70px;display:grid;gap:16px;grid-template-columns:1fr;}
+        @media (min-width:980px){.wrap{grid-template-columns:320px 1fr;align-items:start; padding-top:18px;}}
+        .side{border:1px solid rgba(0,0,0,.12);border-radius:16px;padding:12px;position:sticky;top:12px;height:fit-content;}
+        .side-top{display:grid;gap:10px;margin-bottom:10px;}
+        .side-home{text-decoration:none;font-weight:900;border-bottom:1px solid rgba(0,0,0,.18);width:fit-content;}
+        .side-q{border:1px solid rgba(0,0,0,.14);border-radius:12px;padding:10px 12px;font:inherit;}
+        details{border-top:1px solid rgba(0,0,0,.08);padding-top:10px;margin-top:10px;}
+        summary{cursor:pointer;font-weight:800;}
+        .side-list{display:grid;gap:6px;margin-top:8px;}
+        .side-link{text-decoration:none;padding:8px 10px;border-radius:10px;border:1px solid rgba(0,0,0,.08);}
+        .side-link:hover{background:rgba(0,0,0,.02);}
+        .side-link.active{border-color:rgba(0,0,0,.25);font-weight:800;}
+
+        .content{padding:18px 0;}
+        .content-head{display:grid;gap:10px;margin-bottom:14px;}
+        h1{margin:0;font-size:34px;}
+        .muted{opacity:.78;margin:0;}
+        .content-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+        .btn{border:1px solid rgba(0,0,0,.14);border-radius:12px;padding:10px 12px;text-decoration:none;font-weight:800;}
+        .btn.primary{border-color:rgba(0,0,0,.35);}
+
+        .prose{border:1px solid rgba(0,0,0,.10);border-radius:16px;padding:16px;line-height:1.6;}
+        .prose pre{overflow:auto;border:1px solid rgba(0,0,0,.12);border-radius:12px;padding:12px;}
+        .prose code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}
+        .prose h2{margin-top:22px;}
+        .related{margin-top:14px;}
+        .chips{display:flex;gap:10px;flex-wrap:wrap;}
+        .chip{text-decoration:none;border:1px solid rgba(0,0,0,.14);border-radius:999px;padding:7px 10px;}
+    </style>
+</Layout>

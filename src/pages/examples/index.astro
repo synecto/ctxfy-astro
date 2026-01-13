@@ -1,0 +1,108 @@
+---
+import groq from "groq";
+import Layout from "../../layouts/Layout.astro";
+import { sanity } from "../../lib/sanity";
+
+const examples = await sanity.fetch(groq`*[_type=="example" && defined(slug.current)]
+| order(_createdAt desc){
+  title,
+  summary,
+  "slug": slug.current,
+  tags
+}`);
+
+const allTags = Array.from(
+    new Set((examples || []).flatMap((e: any) => e.tags || []))
+).sort();
+---
+
+<Layout
+        title="Examples — Cerses"
+        description="Real examples: diagnose RAG/LLM failures, trace context, and fix issues fast."
+>
+    <main class="p">
+        <header class="head">
+            <h1>Examples</h1>
+            <p class="muted">Concrete “before → after” playbooks you can copy.</p>
+            <div class="controls">
+                <input id="q" class="input" placeholder="Search examples…" />
+                <select id="tag" class="select">
+                    <option value="">All tags</option>
+                    {allTags.map((t) => <option value={t}>{t}</option>)}
+                </select>
+            </div>
+        </header>
+
+        <section>
+            <div id="grid" class="grid">
+                {(examples || []).map((e: any) => (
+                        <a
+                                class="card"
+                                href={`/examples/${e.slug}/`}
+                                data-track="examples_open"
+                                data-track-props={JSON.stringify({ slug: e.slug })}
+                        >
+                            <div class="title">{e.title}</div>
+                            <div class="summary">{e.summary}</div>
+                            <div class="tags">
+                                {(e.tags || []).slice(0, 4).map((t: string) => (
+                                        <span class="tag">{t}</span>
+                                ))}
+                            </div>
+                        </a>
+                ))}
+            </div>
+
+            <div id="empty" class="empty" style="display:none;">
+                No matches. Try another query/tag.
+            </div>
+        </section>
+    </main>
+
+    <script is:inline>
+        const items = Array.from(document.querySelectorAll("#grid .card"));
+        const q = document.getElementById("q");
+        const tag = document.getElementById("tag");
+        const empty = document.getElementById("empty");
+
+        function norm(s){ return (s||"").toLowerCase().trim(); }
+
+        function apply(){
+            const qv = norm(q.value);
+            const tv = norm(tag.value);
+
+            let shown = 0;
+            for (const el of items){
+                const text = norm(el.textContent);
+                const hasQ = !qv || text.includes(qv);
+                const hasT = !tv || text.includes(tv);
+                const ok = hasQ && hasT;
+                el.style.display = ok ? "" : "none";
+                if (ok) shown++;
+            }
+            empty.style.display = shown ? "none" : "";
+        }
+
+        q.addEventListener("input", apply);
+        tag.addEventListener("change", apply);
+    </script>
+
+    <style>
+        .p{max-width:1100px;margin:0 auto;padding:28px 20px 70px;}
+        .head{display:grid;gap:10px;margin-bottom:18px;}
+        h1{margin:0;font-size:36px;}
+        .muted{opacity:.75;margin:0;}
+        .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+        .input,.select{border:1px solid rgba(0,0,0,.14);border-radius:12px;padding:10px 12px;font:inherit;}
+        .input{min-width:260px;flex:1;}
+        .grid{display:grid;gap:12px;grid-template-columns:repeat(1,minmax(0,1fr));}
+        @media (min-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+        .card{border:1px solid rgba(0,0,0,.12);border-radius:16px;padding:14px;text-decoration:none;color:inherit;display:grid;gap:10px;}
+        .card:hover{background:rgba(0,0,0,.02);}
+        .title{font-weight:800;}
+        .summary{opacity:.8;}
+        .tags{display:flex;gap:6px;flex-wrap:wrap;}
+        .tag{font-size:12px;border:1px solid rgba(0,0,0,.14);border-radius:999px;padding:3px 8px;opacity:.8;}
+        .empty{margin-top:14px;opacity:.75;}
+    </style>
+</Layout>

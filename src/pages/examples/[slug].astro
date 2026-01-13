@@ -3,48 +3,123 @@ import groq from "groq";
 import Layout from "../../layouts/Layout.astro";
 import { sanity } from "../../lib/sanity";
 
-export async function getStaticPaths() {
-    const slugs = await sanity.fetch(groq`*[_type=="example" && defined(slug.current)]{ "slug": slug.current }`);
-    return slugs.map((s: any) => ({ params: { slug: s.slug } }));
-}
-
 const { slug } = Astro.params;
 
 const ex = await sanity.fetch(
     groq`*[_type=="example" && slug.current==$slug][0]{
-    title,
-    "slug": slug.current,
-    summary,
-    before,
-    after,
-    steps,
-    useCase->{
+    title, summary,
+    tags,
+    problem{title, details},
+    solution{title, details},
+    steps[]{title, description},
+    expectedOutput,
+    cta{label, href},
+    relatedUseCases[]->{
       title,
       "slug": slug.current
-    },
-    cta{ label, href }
+    }
   }`,
     { slug }
 );
+
+if (!ex) return Astro.redirect("/examples/");
 ---
 
-<Layout title={ex?.title ?? "Example"}>
-    <main>
-        <p><a href={`/use-cases/${ex.useCase.slug}/`}>← Back to use case: {ex.useCase.title}</a></p>
-        <h1>{ex.title}</h1>
-        {ex.summary ? <p>{ex.summary}</p> : null}
+<Layout title={`${ex.title} — Example`} description={ex.summary}>
+    <main class="p">
+        <header class="head">
+            <a class="back" href="/examples/" data-track="examples_back">← All examples</a>
+            <h1>{ex.title}</h1>
+            <p class="muted">{ex.summary}</p>
 
-        <h2>Before</h2>
-        <p>{ex.before}</p>
+            {ex.tags?.length ? (
+                    <div class="tags">
+                        {ex.tags.map((t: string) => <span class="tag">{t}</span>)}
+                    </div>
+            ) : null}
+        </header>
 
-        <h2>After</h2>
-        <p>{ex.after}</p>
+        <section class="two">
+            <article class="card">
+                <h2>{ex.problem.title}</h2>
+                <p class="muted">{ex.problem.details}</p>
+            </article>
+            <article class="card">
+                <h2>{ex.solution.title}</h2>
+                <p class="muted">{ex.solution.details}</p>
+            </article>
+        </section>
 
-        <h2>Steps</h2>
-        <ol>
-            {ex.steps?.map((s: string) => <li>{s}</li>)}
-        </ol>
+        <section class="card">
+            <h2>Steps</h2>
+            <ol class="steps">
+                {ex.steps?.map((s: any) => (
+                        <li>
+                            <strong>{s.title}</strong>
+                            <div class="muted">{s.description}</div>
+                        </li>
+                ))}
+            </ol>
+        </section>
 
-        {ex.cta?.href ? <a href={ex.cta.href}>{ex.cta.label}</a> : null}
+        {ex.expectedOutput?.length ? (
+                <section class="card">
+                    <h2>Expected output</h2>
+                    <ul class="bullets">
+                        {ex.expectedOutput.map((x: string) => <li>{x}</li>)}
+                    </ul>
+                </section>
+        ) : null}
+
+        {ex.relatedUseCases?.length ? (
+                <section class="card">
+                    <h2>Related use cases</h2>
+                    <div class="links">
+                        {ex.relatedUseCases.map((u: any) => (
+                                <a
+                                        class="pill"
+                                        href={`/use-cases/${u.slug}/`}
+                                        data-track="example_related_use_case"
+                                        data-track-props={JSON.stringify({ useCase: u.slug })}
+                                >
+                                    {u.title} →
+                                </a>
+                        ))}
+                    </div>
+                </section>
+        ) : null}
+
+        <section class="cta">
+            <a
+                    class="btn primary"
+                    href={ex.cta?.href || "/signup"}
+                    data-track="example_cta"
+                    data-track-props={JSON.stringify({ slug })}
+            >
+                {ex.cta?.label || "Try free"}
+            </a>
+            <a class="btn" href="/use-cases/" data-track="example_browse_use_cases">Browse use cases</a>
+        </section>
     </main>
+
+    <style>
+        .p{max-width:980px;margin:0 auto;padding:28px 20px 70px;}
+        .back{text-decoration:none;border-bottom:1px solid rgba(0,0,0,.18);display:inline-block;opacity:.85;}
+        .head{display:grid;gap:10px;margin-bottom:18px;}
+        h1{margin:0;font-size:36px;}
+        .muted{opacity:.78;margin:0;}
+        .tags{display:flex;gap:6px;flex-wrap:wrap;}
+        .tag{font-size:12px;border:1px solid rgba(0,0,0,.14);border-radius:999px;padding:3px 8px;opacity:.85;}
+        .two{display:grid;gap:12px;grid-template-columns:1fr;}
+        @media (min-width:900px){.two{grid-template-columns:1fr 1fr;}}
+        .card{border:1px solid rgba(0,0,0,.12);border-radius:16px;padding:14px;margin-top:12px;}
+        h2{margin:0 0 8px;font-size:20px;}
+        .steps{margin:0;padding-left:18px;display:grid;gap:10px;}
+        .bullets{margin:0;padding-left:18px;display:grid;gap:6px;}
+        .links{display:flex;gap:10px;flex-wrap:wrap;}
+        .pill{text-decoration:none;border:1px solid rgba(0,0,0,.14);border-radius:999px;padding:7px 10px;}
+        .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+        .btn{border:1px solid rgba(0,0,0,.14);border-radius:12px;padding:10px 12px;text-decoration:none;font-weight:800;}
+        .btn.primary{border-color:rgba(0,0,0,.35);}
+    </style>
 </Layout>

@@ -1,0 +1,98 @@
+---
+import groq from "groq";
+import Layout from "../../layouts/Layout.astro";
+import { sanity } from "../../lib/sanity";
+
+const categories = await sanity.fetch(groq`*[_type=="docCategory" && defined(slug.current)]
+| order(order asc, title asc){
+  title,
+  "slug": slug.current,
+  description
+}`);
+
+const docs = await sanity.fetch(groq`*[_type=="doc" && defined(slugPath)]
+| order(order asc, title asc){
+  title,
+  slugPath,
+  summary,
+  category->{"slug": slug.current, title}
+}`);
+
+function toPath(slugPath: string[]) {
+    return "/docs/" + slugPath.map(encodeURIComponent).join("/") + "/";
+}
+---
+
+<Layout title="Docs — Cerses" description="Documentation: quickstart, integration, tracing, and debugging workflows.">
+    <main class="p">
+        <header class="head">
+            <h1>Docs</h1>
+            <p class="muted">Everything you need to integrate and debug context.</p>
+            <input id="q" class="input" placeholder="Search docs…" />
+        </header>
+
+        <section class="grid">
+            {categories.map((c: any) => (
+                    <article class="card">
+                        <div class="k">{c.title}</div>
+                        {c.description ? <div class="muted">{c.description}</div> : null}
+                        <div class="list" data-cat={c.slug}>
+                            {docs
+                                .filter((d: any) => d.category?.slug === c.slug)
+                                .slice(0, 6)
+                                .map((d: any) => (
+                                        <a
+                                                class="doc"
+                                                href={toPath(d.slugPath)}
+                                                data-track="docs_open"
+                                                data-track-props={JSON.stringify({ path: d.slugPath.join("/") })}
+                                        >
+                                            <strong>{d.title}</strong>
+                                            {d.summary ? <span class="muted"> — {d.summary}</span> : null}
+                                        </a>
+                                ))}
+                        </div>
+                    </article>
+            ))}
+        </section>
+
+        <section class="cta">
+            <a class="btn primary" href="/signup" data-track="docs_try_free">Try free</a>
+            <a class="btn" href="/use-cases/" data-track="docs_browse_use_cases">Browse use cases</a>
+        </section>
+    </main>
+
+    <script is:inline>
+        const q = document.getElementById("q");
+        const docLinks = Array.from(document.querySelectorAll(".doc"));
+        function norm(s){ return (s||"").toLowerCase().trim(); }
+        function apply(){
+            const qv = norm(q.value);
+            let shown = 0;
+            for (const el of docLinks){
+                const ok = !qv || norm(el.textContent).includes(qv);
+                el.style.display = ok ? "" : "none";
+                if (ok) shown++;
+            }
+        }
+        q.addEventListener("input", apply);
+    </script>
+
+    <style>
+        .p{max-width:1100px;margin:0 auto;padding:28px 20px 70px;}
+        .head{display:grid;gap:10px;margin-bottom:16px;}
+        h1{margin:0;font-size:36px;}
+        .muted{opacity:.75}
+        .input{border:1px solid rgba(0,0,0,.14);border-radius:12px;padding:10px 12px;font:inherit;max-width:520px;}
+        .grid{display:grid;gap:12px;grid-template-columns:repeat(1,minmax(0,1fr));}
+        @media (min-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+        .card{border:1px solid rgba(0,0,0,.12);border-radius:16px;padding:14px;}
+        .k{font-weight:900;margin-bottom:6px;}
+        .list{display:grid;gap:8px;margin-top:10px;}
+        .doc{text-decoration:none;border:1px solid rgba(0,0,0,.10);border-radius:12px;padding:10px 12px;}
+        .doc:hover{background:rgba(0,0,0,.02);}
+        .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+        .btn{border:1px solid rgba(0,0,0,.14);border-radius:12px;padding:10px 12px;text-decoration:none;font-weight:800;}
+        .btn.primary{border-color:rgba(0,0,0,.35);}
+    </style>
+</Layout>

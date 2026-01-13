@@ -1,0 +1,189 @@
+---
+import groq from "groq";
+import Layout from "../../layouts/Layout.astro";
+import { sanity } from "../../lib/sanity";
+
+const pricing = await sanity.fetch(groq`*[_type=="pricingPage"][0]{
+  title, description,
+  hero{headline, subheadline, billingDefault},
+  plans[]{
+    name, badge, description,
+    price{monthly, yearly, note},
+    features,
+    cta{label, href},
+    isPrimary
+  },
+  comparison{rows[]{feature, values}},
+  faq[]{q, a}
+}`);
+
+if (!pricing) {
+    // If the singleton isn't created yet, redirect so you notice quickly.
+    // (You can remove this once created.)
+    return Astro.redirect("/docs/");
+}
+
+const plans = pricing.plans || [];
+---
+
+<Layout title={pricing.title || "Pricing — Cerses"} description={pricing.description || "Transparent pricing for debugging and context tracing."}>
+    <main class="p">
+        <header class="head">
+            <h1>{pricing.hero.headline}</h1>
+            {pricing.hero.subheadline ? <p class="muted">{pricing.hero.subheadline}</p> : null}
+
+            <div class="toggle">
+                <button id="m" class="tbtn" data-mode="monthly" data-track="pricing_billing_toggle" data-track-props='{"mode":"monthly"}'>Monthly</button>
+                <button id="y" class="tbtn" data-mode="yearly" data-track="pricing_billing_toggle" data-track-props='{"mode":"yearly"}'>Yearly</button>
+            </div>
+        </header>
+
+        <section class="grid" id="plans">
+            {plans.map((p: any, idx: number) => (
+                    <article class={`card ${p.isPrimary ? "primary" : ""}`}>
+                        <div class="top">
+                            <div class="name">{p.name}</div>
+                            {p.badge ? <span class="badge">{p.badge}</span> : null}
+                        </div>
+
+                        <div class="desc muted">{p.description}</div>
+
+                        <div class="price">
+                            <div class="num">
+              <span class="money" data-monthly={p.price?.monthly} data-yearly={p.price?.yearly || p.price?.monthly}>
+                {p.price?.monthly}
+              </span>
+                                <span class="per muted">/ {pricing.hero.billingDefault || "monthly"}</span>
+                            </div>
+                            {p.price?.note ? <div class="note muted">{p.price.note}</div> : null}
+                        </div>
+
+                        <a
+                                class={`btn ${p.isPrimary ? "btnp" : ""}`}
+                                href={p.cta?.href}
+                                data-track="pricing_plan_cta"
+                                data-track-props={JSON.stringify({ plan: p.name, index: idx })}
+                        >
+                            {p.cta?.label}
+                        </a>
+
+                        <ul class="feat">
+                            {(p.features || []).map((f: string) => <li>{f}</li>)}
+                        </ul>
+                    </article>
+            ))}
+        </section>
+
+        {pricing.comparison?.rows?.length ? (
+                <section class="cmp">
+                    <h2>Compare</h2>
+                    <div class="table">
+                        <div class="row headrow">
+                            <div class="cell f">Feature</div>
+                            {plans.map((p: any) => <div class="cell">{p.name}</div>)}
+                        </div>
+
+                        {pricing.comparison.rows.map((r: any) => (
+                                <div class="row">
+                                    <div class="cell f">{r.feature}</div>
+                                    {r.values.map((v: string) => <div class="cell">{v}</div>)}
+                                </div>
+                        ))}
+                    </div>
+                </section>
+        ) : null}
+
+        {pricing.faq?.length ? (
+                <section class="faq">
+                    <h2>FAQ</h2>
+                    <div class="faqgrid">
+                        {pricing.faq.slice(0, 10).map((f: any) => (
+                                <details class="faqitem">
+                                    <summary>{f.q}</summary>
+                                    <p class="muted">{f.a}</p>
+                                </details>
+                        ))}
+                    </div>
+                </section>
+        ) : null}
+
+        <section class="final">
+            <h2>Ready to debug faster?</h2>
+            <p class="muted">Start free, then upgrade when you hit real scale.</p>
+            <div class="cta">
+                <a class="btn btnp" href="/signup" data-track="pricing_try_free">Try free</a>
+                <a class="btn" href="/use-cases/" data-track="pricing_browse_use_cases">Browse use cases</a>
+            </div>
+        </section>
+    </main>
+
+    <script is:inline>
+        const def = "{pricing.hero.billingDefault || "monthly"}";
+        const m = document.getElementById("m");
+        const y = document.getElementById("y");
+        const moneyEls = Array.from(document.querySelectorAll(".money"));
+        const perEls = Array.from(document.querySelectorAll(".per"));
+
+        function setMode(mode){
+            m.classList.toggle("active", mode==="monthly");
+            y.classList.toggle("active", mode==="yearly");
+            for (const el of moneyEls){
+                const val = el.getAttribute(mode==="monthly" ? "data-monthly" : "data-yearly") || "";
+                el.textContent = val;
+            }
+            for (const el of perEls){
+                el.textContent = "/ " + mode;
+            }
+            window.track?.("pricing_billing_set", { mode });
+        }
+
+        setMode(def === "yearly" ? "yearly" : "monthly");
+        m.addEventListener("click", () => setMode("monthly"));
+        y.addEventListener("click", () => setMode("yearly"));
+    </script>
+
+    <style>
+        .p{max-width:1100px;margin:0 auto;padding:28px 20px 70px;}
+        .head{display:grid;gap:10px;margin-bottom:18px;}
+        h1{margin:0;font-size:38px;}
+        .muted{opacity:.75;margin:0;}
+        .toggle{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+        .tbtn{border:1px solid rgba(0,0,0,.14);border-radius:12px;padding:9px 12px;background:transparent;font-weight:800;cursor:pointer;}
+        .tbtn.active{border-color:rgba(0,0,0,.35);}
+        .grid{display:grid;gap:12px;grid-template-columns:repeat(1,minmax(0,1fr));}
+        @media (min-width:900px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+        .card{border:1px solid rgba(0,0,0,.12);border-radius:18px;padding:14px;display:grid;gap:12px;}
+        .card.primary{border-color:rgba(0,0,0,.30);}
+        .top{display:flex;justify-content:space-between;gap:10px;align-items:center;}
+        .name{font-weight:900;}
+        .badge{font-size:12px;border:1px solid rgba(0,0,0,.14);border-radius:999px;padding:3px 8px;opacity:.9;}
+        .price .num{display:flex;gap:8px;align-items:baseline;}
+        .money{font-size:28px;font-weight:1000;}
+        .note{font-size:12px;}
+        .btn{display:inline-flex;justify-content:center;text-decoration:none;border:1px solid rgba(0,0,0,.14);border-radius:12px;padding:10px 12px;font-weight:900;}
+        .btnp{border-color:rgba(0,0,0,.35);}
+        .feat{margin:0;padding-left:18px;display:grid;gap:6px;opacity:.9;}
+
+        .cmp{margin-top:26px;}
+        h2{margin:0 0 12px;font-size:24px;}
+        .table{border:1px solid rgba(0,0,0,.12);border-radius:16px;overflow:hidden;}
+        .row{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:0;}
+        .headrow{background:rgba(0,0,0,.03);font-weight:900;}
+        .cell{padding:10px 12px;border-top:1px solid rgba(0,0,0,.08);}
+        .row:first-child .cell{border-top:none;}
+        .cell.f{opacity:.9;}
+        @media (max-width:899px){
+            .row{grid-template-columns:1fr;}
+            .headrow{display:none;}
+            .cell{border-top:1px solid rgba(0,0,0,.08);}
+            .cell.f{font-weight:900;background:rgba(0,0,0,.02);}
+        }
+
+        .faq{margin-top:26px;}
+        .faqgrid{display:grid;gap:10px;}
+        .faqitem{border:1px solid rgba(0,0,0,.12);border-radius:14px;padding:10px 12px;}
+        summary{cursor:pointer;font-weight:900;}
+        .final{margin-top:30px;border:1px solid rgba(0,0,0,.12);border-radius:18px;padding:16px;display:grid;gap:10px;}
+        .cta{display:flex;gap:10px;flex-wrap:wrap;}
+    </style>
+</Layout>

@@ -11,6 +11,7 @@
   --color-black: #000;
   --color-white: #fff;
   --color-off-white: #fefefe;
+  --color-accent: #FEBF23;
 
   --color-slate-50: oklch(0.984 0.003 247.858);
   --color-slate-100: oklch(0.968 0.007 247.896);

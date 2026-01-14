@@ -1,7 +1,7 @@
 ---
 import groq from "groq";
-import Layout from "../../layouts/Layout.astro";
-import { sanityClient } from "../../lib/sanityClient.ts";
+import Layout from "@/layout/Layout.astro";
+import { sanityClient } from "@lib/sanityClient.ts";
 
 const pricing = await sanityClient.fetch(groq`*[_type=="pricingPage"][0]{
   title, description,
@@ -118,7 +118,7 @@ const plans = pricing.plans || [];
     </main>
 
     <script is:inline>
-        const def = "{pricing.hero.billingDefault || "monthly"}";
+        const def = "{pricing.hero.billingDefault || 'monthly'}";
         const m = document.getElementById("m");
         const y = document.getElementById("y");
         const moneyEls = Array.from(document.querySelectorAll(".money"));

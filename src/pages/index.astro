@@ -1,6 +1,6 @@
 ---
 import groq from "groq";
-import Layout from "../layouts/Layout.astro";
+import Layout from "@/layout/Layout.astro";
 import { sanityClient } from "../lib/sanityClient.ts";
 
 const home = await sanityClient.fetch(groq`*[_type=="homePage"][0]{

@@ -1,9 +1,9 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import { sanity } from "../../lib/sanityClient";
-import { blogIndexQuery } from "../../lib/queries/blog";
+import Layout from "@/layout/Layout.astro";
+import { sanityClient } from "@lib/sanityClient";
+import { blogIndexQuery } from "@lib/query/blog";
 
-const data = await sanity.fetch(blogIndexQuery);
+const data = await sanityClient.fetch(blogIndexQuery);
 
 const settings = data.settings ?? { title: "Blog", subtitle: "" };
 const categories = data.categories ?? [];

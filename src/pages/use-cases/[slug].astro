@@ -1,7 +1,7 @@
 ---
 import groq from "groq";
-import Layout from "../../layouts/Layout.astro";
-import { sanityClient } from "../../lib/sanityClient.ts";
+import Layout from "@/layout/Layout.astro";
+import { sanityClient } from "@lib/sanityClient.ts";
 
 export async function getStaticPaths() {
     const slugs = await sanityClient.fetch(groq`*[_type=="useCase" && defined(slug.current)]{ "slug": slug.current }`);

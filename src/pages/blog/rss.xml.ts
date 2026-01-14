@@ -1,5 +1,5 @@
 import rss from "@astrojs/rss";
-import { sanityClient } from "../../lib/sanityClient";
+import { sanityClient } from "@lib/sanityClient";
 
 const q = `*[_type=="blogPost"]|order(publishedAt desc)[0...50]{title, "slug": slug.current, excerpt, publishedAt}`;
 

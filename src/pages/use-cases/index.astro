@@ -1,10 +1,10 @@
 ---
 import groq from "groq";
 import Layout from "../../layouts/Layout.astro";
-import { sanity } from "../../lib/sanity";
+import { sanityClient } from "../../lib/sanityClient.ts";
 
 // 1) Достаём use-cases для карточек
-const useCases = await sanity.fetch(groq`*[_type=="useCase" && defined(slug.current)]
+const useCases = await sanityClient.fetch(groq`*[_type=="useCase" && defined(slug.current)]
 | order(_createdAt desc) {
   title,
   "slug": slug.current,

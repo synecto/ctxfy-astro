@@ -1,16 +1,16 @@
 ---
 type Props = {
-	title?: string;
-	description?: string;
-	canonical?: string;
-	noindex?: boolean;
+    title?: string;
+    description?: string;
+    canonical?: string;
+    noindex?: boolean;
 };
 
 const {
-	title = "Cerses",
-	description = "Make LLM/RAG systems reliable with context tracing, provenance, and debugging.",
-	canonical,
-	noindex = false,
+    title = "Cerses",
+    description = "Make LLM/RAG systems reliable with context tracing, provenance, and debugging.",
+    canonical,
+    noindex = false,
 } = Astro.props;
 
 // Public env vars (Astro exposes only PUBLIC_*)
@@ -26,204 +26,303 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
 <!doctype html>
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<meta name="description" content={description} />
-	<link rel="canonical" href={canonicalUrl} />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content={description}/>
+    <link rel="canonical" href={canonicalUrl}/>
 
-	{noindex ? <meta name="robots" content="noindex,nofollow" /> : null}
+    {noindex ?
+            <meta name="robots" content="noindex,nofollow"/> : null}
 
-	<title>{title}</title>
+    <title>{title}</title>
 
-	<!-- Open Graph -->
-	<meta property="og:title" content={title} />
-	<meta property="og:description" content={description} />
-	<meta property="og:type" content="website" />
-	<meta property="og:url" content={canonicalUrl} />
+    <!-- Open Graph -->
+    <meta property="og:title" content={title}/>
+    <meta property="og:description" content={description}/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content={canonicalUrl}/>
 
-	<!-- Twitter -->
-	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content={title} />
-	<meta name="twitter:description" content={description} />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content={title}/>
+    <meta name="twitter:description" content={description}/>
 
-	<!-- Minimal base styles (keep it simple; replace later with your design system) -->
-	<style>
-		:root { color-scheme: light; }
-		body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
-		a { color: inherit; }
-		.container { max-width: 1160px; margin: 0 auto; padding: 0 20px; }
-		.topbar { border-bottom: 1px solid rgba(0,0,0,.10); }
-		.nav { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
-		.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; letter-spacing: .02em; }
-		.brand-dot { width: 10px; height: 10px; border-radius: 99px; background: rgba(0,0,0,.7); display: inline-block; }
-		.links { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
-		.link { text-decoration: none; opacity: .85; padding: 8px 10px; border-radius: 10px; }
-		.link:hover { background: rgba(0,0,0,.04); opacity: 1; }
-		.cta { display: flex; gap: 10px; align-items: center; }
-		.btn { text-decoration: none; border: 1px solid rgba(0,0,0,.14); padding: 9px 12px; border-radius: 12px; font-weight: 700; }
-		.btn.primary { border-color: rgba(0,0,0,.35); }
-		main { min-height: calc(100vh - 64px - 120px); }
-		footer { border-top: 1px solid rgba(0,0,0,.10); padding: 22px 0; }
-		.foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; opacity: .85; }
-		.foot a { text-decoration: none; border-bottom: 1px solid rgba(0,0,0,.18); }
-		.muted { opacity: .7; }
-	</style>
+    <!-- Minimal base styles (keep it simple; replace later with your design system) -->
+    <style>
+        :root {
+            color-scheme: light;
+        }
 
-	<!-- Runtime config exposed for client scripts -->
-	<script is:inline>
-		window.__APP__ = {
-			env: {APP_ENV: "{APP_ENV}"},
-			amplitude: { apiKey: "{AMPLITUDE_API_KEY || ""}" },
-			growthbook: {
-				clientKey: "{GROWTHBOOK_CLIENT_KEY || ""}",
-				apiHost: "{GROWTHBOOK_API_HOST || ""}"
-			}
-		};
-	</script>
+        body {
+            margin: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        }
 
-	<!-- Analytics + Experiments (Amplitude + GrowthBook) -->
-	<script type="module">
-		const cfg = window.__APP__ || {};
-		const page = {
-			path: location.pathname,
-			href: location.href,
-			referrer: document.referrer || null,
-			title: document.title
-		};
+        a {
+            color: inherit;
+        }
 
-		// 1) Amplitude
-		async function initAmplitude() {
-			const key = cfg?.amplitude?.apiKey;
-			if (!key) return null;
+        .container {
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
 
-			try {
-				const mod = await import("@amplitude/analytics-browser");
-				mod.init(key, undefined, {
-					defaultTracking: { pageViews: true, sessions: true, formInteractions: true },
-					logLevel: cfg?.env?.APP_ENV === "production" ? "WARN" : "INFO",
-				});
+        .topbar {
+            border-bottom: 1px solid rgba(0, 0, 0, .10);
+        }
 
-				// expose helper
-				window.track = (event, props={}) => mod.track(event, { ...props, ...page });
-				window.track("page_view", { source: "layout" });
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+            gap: 16px;
+        }
 
-				return mod;
-			} catch (e) {
-				console.warn("Amplitude init failed", e);
-				return null;
-			}
-		}
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: 800;
+            letter-spacing: .02em;
+        }
 
-		// 2) GrowthBook
-		async function initGrowthBook() {
-			const clientKey = cfg?.growthbook?.clientKey;
-			const apiHost = cfg?.growthbook?.apiHost;
-			if (!clientKey || !apiHost) return null;
+        .brand-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 99px;
+            background: rgba(0, 0, 0, .7);
+            display: inline-block;
+        }
 
-			try {
-				const { GrowthBook } = await import("@growthbook/growthbook");
+        .links {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
 
-				const gb = new GrowthBook({
-					apiHost,
-					clientKey,
-					enableDevMode: cfg?.env?.APP_ENV !== "production",
-					trackingCallback: (experiment, result) => {
-						window.track?.("experiment_viewed", {
-							experimentKey: experiment.key,
-							variationId: result.variationId,
-						});
-					},
-				});
+        .link {
+            text-decoration: none;
+            opacity: .85;
+            padding: 8px 10px;
+            border-radius: 10px;
+        }
 
-				// Basic attributes (expand later: logged-in userId, plan, etc.)
-				gb.setAttributes({
-					path: location.pathname,
-					referrer: document.referrer || "",
-					utm_source: new URLSearchParams(location.search).get("utm_source") || "",
-					utm_campaign: new URLSearchParams(location.search).get("utm_campaign") || "",
-				});
+        .link:hover {
+            background: rgba(0, 0, 0, .04);
+            opacity: 1;
+        }
 
-				await gb.loadFeatures({ timeout: 1500 });
-				window.growthbook = gb;
+        .cta {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
 
-				// Example: read a feature flag (use in pages if needed)
-				// const v = gb.getFeatureValue("home_headline_variant", "control");
+        .btn {
+            text-decoration: none;
+            border: 1px solid rgba(0, 0, 0, .14);
+            padding: 9px 12px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
 
-				return gb;
-			} catch (e) {
-				console.warn("GrowthBook init failed", e);
-				return null;
-			}
-		}
+        .btn.primary {
+            border-color: rgba(0, 0, 0, .35);
+        }
 
-		// 3) Track clicks on anything with data-track
-		function initClickTracking() {
-			document.addEventListener("click", (e) => {
-				const el = e.target?.closest?.("[data-track]");
-				if (!el) return;
+        main {
+            min-height: calc(100vh - 64px - 120px);
+        }
 
-				const event = el.getAttribute("data-track");
-				const propsRaw = el.getAttribute("data-track-props");
-				let props = {};
-				try { props = propsRaw ? JSON.parse(propsRaw) : {}; } catch {}
+        footer {
+            border-top: 1px solid rgba(0, 0, 0, .10);
+            padding: 22px 0;
+        }
 
-				window.track?.(event, {
-					...props,
-					text: (el.textContent || "").trim().slice(0, 80),
-					href: el.getAttribute("href") || null,
-				});
-			});
-		}
+        .foot {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            opacity: .85;
+        }
 
-		await initAmplitude();
-		await initGrowthBook();
-		initClickTracking();
-	</script>
+        .foot a {
+            text-decoration: none;
+            border-bottom: 1px solid rgba(0, 0, 0, .18);
+        }
+
+        .muted {
+            opacity: .7;
+        }
+    </style>
+
+    <!-- Runtime config exposed for client scripts -->
+    <script is:inline>
+        window.__APP__ = {
+            env: {APP_ENV: "{APP_ENV}"},
+            amplitude: {apiKey: "{AMPLITUDE_API_KEY}" || ""},
+            growthbook: {
+                clientKey: "{GROWTHBOOK_CLIENT_KEY}",
+                apiHost: "{GROWTHBOOK_API_HOST}"
+            }
+        };
+    </script>
+
+    <!-- Analytics + Experiments (Amplitude + GrowthBook) -->
+    <script type="module">
+        const cfg = window.__APP__ || {};
+        const page = {
+            path: location.pathname,
+            href: location.href,
+            referrer: document.referrer || null,
+            title: document.title
+        };
+
+        // 1) Amplitude
+        async function initAmplitude() {
+            const key = cfg?.amplitude?.apiKey;
+            if (!key) return null;
+
+            try {
+                const mod = await import("@amplitude/analytics-browser");
+                mod.init(key, undefined, {
+                    defaultTracking: {pageViews: true, sessions: true, formInteractions: true},
+                    logLevel: cfg?.env?.APP_ENV === "production" ? "WARN" : "INFO",
+                });
+
+                // expose helper
+                window.track = (event, props = {}) => mod.track(event, {...props, ...page});
+                window.track("page_view", {source: "layout"});
+
+                return mod;
+            } catch (e) {
+                console.warn("Amplitude init failed", e);
+                return null;
+            }
+        }
+
+        // 2) GrowthBook
+        async function initGrowthBook() {
+            const clientKey = cfg?.growthbook?.clientKey;
+            const apiHost = cfg?.growthbook?.apiHost;
+            if (!clientKey || !apiHost) return null;
+
+            try {
+                const {GrowthBook} = await import("@growthbook/growthbook");
+
+                const gb = new GrowthBook({
+                    apiHost,
+                    clientKey,
+                    enableDevMode: cfg?.env?.APP_ENV !== "production",
+                    trackingCallback: (experiment, result) => {
+                        window.track?.("experiment_viewed", {
+                            experimentKey: experiment.key,
+                            variationId: result.variationId,
+                        });
+                    },
+                });
+
+                // Basic attributes (expand later: logged-in userId, plan, etc.)
+                gb.setAttributes({
+                    path: location.pathname,
+                    referrer: document.referrer || "",
+                    utm_source: new URLSearchParams(location.search).get("utm_source") || "",
+                    utm_campaign: new URLSearchParams(location.search).get("utm_campaign") || "",
+                });
+
+                await gb.loadFeatures({timeout: 1500});
+                window.growthbook = gb;
+
+                // Example: read a feature flag (use in pages if needed)
+                // const v = gb.getFeatureValue("home_headline_variant", "control");
+
+                return gb;
+            } catch (e) {
+                console.warn("GrowthBook init failed", e);
+                return null;
+            }
+        }
+
+        // 3) Track clicks on anything with data-track
+        function initClickTracking() {
+            document.addEventListener("click", (e) => {
+                const el = e.target?.closest?.("[data-track]");
+                if (!el) return;
+
+                const event = el.getAttribute("data-track");
+                const propsRaw = el.getAttribute("data-track-props");
+                let props = {};
+                try {
+                    props = propsRaw ? JSON.parse(propsRaw) : {};
+                } catch {
+                }
+
+                window.track?.(event, {
+                    ...props,
+                    text: (el.textContent || "").trim().slice(0, 80),
+                    href: el.getAttribute("href") || null,
+                });
+            });
+        }
+
+        await initAmplitude();
+        await initGrowthBook();
+        initClickTracking();
+    </script>
 </head>
 
 <body>
 <header class="topbar">
-	<div class="container">
-		<nav class="nav" aria-label="Primary">
-			<a class="brand" href="/" data-track="nav_click" data-track-props='{"item":"brand"}'>
-				<span class="brand-dot"></span>
-				<span>Cerses</span>
-			</a>
+    <div class="container">
+        <nav class="nav" aria-label="Primary">
+            <a class="brand" href="/" data-track="nav_click" data-track-props='{"item":"brand"}'>
+                <span class="brand-dot"></span>
+                <span>Cerses</span>
+            </a>
 
-			<div class="links">
-				<a class="link" href="/use-cases/" data-track="nav_click" data-track-props='{"item":"use_cases"}'>Use cases</a>
-				<a class="link" href="/examples/" data-track="nav_click" data-track-props='{"item":"examples"}'>Examples</a>
-				<a class="link" href="/docs/" data-track="nav_click" data-track-props='{"item":"docs"}'>Docs</a>
-				<a class="link" href="/pricing/" data-track="nav_click" data-track-props='{"item":"pricing"}'>Pricing</a>
-			</div>
+            <div class="links">
+                <a class="link" href="/use-cases/" data-track="nav_click" data-track-props='{"item":"use_cases"}'>Use
+                    cases</a>
+                <a class="link" href="/examples/" data-track="nav_click"
+                   data-track-props='{"item":"examples"}'>Examples</a>
+                <a class="link" href="/docs/" data-track="nav_click" data-track-props='{"item":"docs"}'>Docs</a>
+                <a class="link" href="/pricing/" data-track="nav_click"
+                   data-track-props='{"item":"pricing"}'>Pricing</a>
+            </div>
 
-			<div class="cta">
-				<a class="btn" href="/use-cases/rag-debugging/" data-track="nav_click" data-track-props='{"item":"see_rag_use_case"}'>
-					See RAG debug
-				</a>
-				<a class="btn primary" href="/signup" data-track="nav_click" data-track-props='{"item":"try_free"}'>
-					Try free
-				</a>
-			</div>
-		</nav>
-	</div>
+            <div class="cta">
+                <a class="btn" href="/use-cases/rag-debugging/" data-track="nav_click"
+                   data-track-props='{"item":"see_rag_use_case"}'>
+                    See RAG debug
+                </a>
+                <a class="btn primary" href="/signup" data-track="nav_click" data-track-props='{"item":"try_free"}'>
+                    Try free
+                </a>
+            </div>
+        </nav>
+    </div>
 </header>
 
 <main>
-	<slot />
+    <slot/>
 </main>
 
 <footer>
-	<div class="container">
-		<div class="foot">
-			<div class="muted">© {new Date().getFullYear()} Cerses</div>
-			<div style="display:flex; gap:14px; flex-wrap:wrap;">
-				<a href="/privacy/" data-track="footer_click" data-track-props='{"item":"privacy"}'>Privacy</a>
-				<a href="/terms/" data-track="footer_click" data-track-props='{"item":"terms"}'>Terms</a>
-				<a href="/contact/" data-track="footer_click" data-track-props='{"item":"contact"}'>Contact</a>
-			</div>
-		</div>
-	</div>
+    <div class="container">
+        <div class="foot">
+            <div class="muted">© {new Date().getFullYear()} Cerses</div>
+            <div style="display:flex; gap:14px; flex-wrap:wrap;">
+                <a href="/privacy/" data-track="footer_click" data-track-props='{"item":"privacy"}'>Privacy</a>
+                <a href="/terms/" data-track="footer_click" data-track-props='{"item":"terms"}'>Terms</a>
+                <a href="/contact/" data-track="footer_click" data-track-props='{"item":"contact"}'>Contact</a>
+            </div>
+        </div>
+    </div>
 </footer>
 </body>
 </html>

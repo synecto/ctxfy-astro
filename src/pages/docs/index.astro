@@ -1,16 +1,16 @@
 ---
 import groq from "groq";
 import Layout from "../../layouts/Layout.astro";
-import { sanity } from "../../lib/sanity";
+import { sanityClient } from "../../lib/sanityClient.ts";
 
-const categories = await sanity.fetch(groq`*[_type=="docCategory" && defined(slug.current)]
+const categories = await sanityClient.fetch(groq`*[_type=="docCategory" && defined(slug.current)]
 | order(order asc, title asc){
   title,
   "slug": slug.current,
   description
 }`);
 
-const docs = await sanity.fetch(groq`*[_type=="doc" && defined(slugPath)]
+const docs = await sanityClient.fetch(groq`*[_type=="doc" && defined(slugPath)]
 | order(order asc, title asc){
   title,
   slugPath,

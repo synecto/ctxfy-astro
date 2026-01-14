@@ -10,9 +10,17 @@
   },
   "dependencies": {
     "@amplitude/analytics-browser": "^2.33.1",
+    "@astrojs/markdoc": "^0.15.10",
+    "@astrojs/rss": "^4.0.14",
+    "@astrojs/svelte": "^7.2.5",
+    "@astrojs/vercel": "^9.0.3",
+    "@keystatic/astro": "^5.0.6",
     "@portabletext/to-html": "^5.0.1",
     "@sanity/client": "^7.14.0",
+    "@tailwindcss/vite": "^4.1.18",
     "astro": "^5.16.9",
-    "groq": "^5.2.0"
+    "groq": "^5.2.0",
+    "react-dom": "^19.2.3",
+    "svelte": "^5.46.3"
   }
 }

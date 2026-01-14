@@ -1,9 +1,9 @@
 ---
 import groq from "groq";
 import Layout from "../../layouts/Layout.astro";
-import { sanity } from "../../lib/sanity";
+import { sanityClient } from "../../lib/sanityClient.ts";
 
-const pricing = await sanity.fetch(groq`*[_type=="pricingPage"][0]{
+const pricing = await sanityClient.fetch(groq`*[_type=="pricingPage"][0]{
   title, description,
   hero{headline, subheadline, billingDefault},
   plans[]{

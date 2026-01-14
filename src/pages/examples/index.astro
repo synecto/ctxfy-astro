@@ -1,9 +1,9 @@
 ---
 import groq from "groq";
 import Layout from "../../layouts/Layout.astro";
-import { sanity } from "../../lib/sanity";
+import { sanityClient } from "../../lib/sanityClient.ts";
 
-const examples = await sanity.fetch(groq`*[_type=="example" && defined(slug.current)]
+const examples = await sanityClient.fetch(groq`*[_type=="example" && defined(slug.current)]
 | order(_createdAt desc){
   title,
   summary,

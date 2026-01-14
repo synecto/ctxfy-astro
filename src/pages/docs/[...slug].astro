@@ -1,13 +1,13 @@
 ---
 import groq from "groq";
 import Layout from "../../layouts/Layout.astro";
-import { sanity } from "../../lib/sanity";
+import { sanityClient } from "../../lib/sanityClient.ts";
 import { toHTML } from "@portabletext/to-html";
 
 const slugParam = Astro.params.slug;
 const slugPath = Array.isArray(slugParam) ? slugParam : [slugParam];
 
-const doc = await sanity.fetch(
+const doc = await sanityClient.fetch(
     groq`*[_type=="doc" && slugPath==$slugPath][0]{
     title,
     summary,
@@ -31,14 +31,14 @@ const doc = await sanity.fetch(
 if (!doc) return Astro.redirect("/docs/");
 
 // Sidebar: all categories + docs
-const categories = await sanity.fetch(groq`*[_type=="docCategory" && defined(slug.current)]
+const categories = await sanityClient.fetch(groq`*[_type=="docCategory" && defined(slug.current)]
 | order(order asc, title asc){
   title,
   "slug": slug.current,
   order
 }`);
 
-const docs = await sanity.fetch(groq`*[_type=="doc" && defined(slugPath)]
+const docs = await sanityClient.fetch(groq`*[_type=="doc" && defined(slugPath)]
 | order(order asc, title asc){
   title,
   slugPath,

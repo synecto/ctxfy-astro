@@ -1,11 +1,11 @@
 ---
 import groq from "groq";
 import Layout from "../../layouts/Layout.astro";
-import { sanity } from "../../lib/sanity";
+import { sanityClient } from "../../lib/sanityClient.ts";
 
 const { slug } = Astro.params;
 
-const ex = await sanity.fetch(
+const ex = await sanityClient.fetch(
     groq`*[_type=="example" && slug.current==$slug][0]{
     title, summary,
     tags,

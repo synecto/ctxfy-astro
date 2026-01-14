@@ -1,0 +1,93 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { sanity } from "../../lib/sanityClient";
+import { blogIndexQuery } from "../../lib/queries/blog";
+
+const data = await sanity.fetch(blogIndexQuery);
+
+const settings = data.settings ?? { title: "Blog", subtitle: "" };
+const categories = data.categories ?? [];
+const tags = data.tags ?? [];
+const posts = data.posts ?? [];
+---
+
+<Layout title={settings.title} description={settings.subtitle}>
+    <main class="container">
+        <header class="hero">
+            <h1>{settings.title}</h1>
+            {settings.subtitle && <p>{settings.subtitle}</p>}
+        </header>
+
+        <section class="filters">
+            <input id="q" placeholder="Search posts…" />
+            <select id="category">
+                <option value="">All categories</option>
+                {categories.map((c) => <option value={c.slug}>{c.title}</option>)}
+            </select>
+            <select id="tag">
+                <option value="">All tags</option>
+                {tags.map((t) => <option value={t.slug}>{t.title}</option>)}
+            </select>
+        </section>
+
+        <section class="grid" id="posts">
+            {posts.map((p) => (
+                    <article class="card" data-title={p.title.toLowerCase()} data-category={p.category?.slug ?? ""} data-tags={(p.tags ?? []).map(t=>t.slug).join(",")}>
+                        <a href={`/blog/${p.slug}/`} class="cardLink">
+                            <h2>{p.title}</h2>
+                        </a>
+                        <p class="meta">
+                            {p.category?.title ? <span class="pill">{p.category.title}</span> : null}
+                            <span class="date">{new Date(p.publishedAt).toLocaleDateString()}</span>
+                        </p>
+                        <p>{p.excerpt}</p>
+                        <div class="tags">
+                            {(p.tags ?? []).slice(0, 3).map((t) => <a class="tag" href={`/blog/tag/${t.slug}/`}>#{t.title}</a>)}
+                        </div>
+                    </article>
+            ))}
+        </section>
+    </main>
+
+    <script>
+        const q = document.getElementById("q");
+        const cat = document.getElementById("category");
+        const tag = document.getElementById("tag");
+        const cards = [...document.querySelectorAll("#posts .card")];
+
+        function apply() {
+            const query = (q.value || "").trim().toLowerCase();
+            const c = cat.value || "";
+            const t = tag.value || "";
+
+            for (const el of cards) {
+                const title = el.dataset.title || "";
+                const category = el.dataset.category || "";
+                const tags = (el.dataset.tags || "").split(",").filter(Boolean);
+                const okQ = !query || title.includes(query);
+                const okC = !c || category === c;
+                const okT = !t || tags.includes(t);
+                el.style.display = (okQ && okC && okT) ? "" : "none";
+            }
+        }
+
+        q.addEventListener("input", apply);
+        cat.addEventListener("change", apply);
+        tag.addEventListener("change", apply);
+    </script>
+
+    <style>
+        .container { max-width: 1040px; margin: 0 auto; padding: 24px 16px; }
+        .hero { padding: 24px 0 8px; }
+        .filters { display: grid; grid-template-columns: 1fr 220px 220px; gap: 12px; padding: 16px 0 20px; }
+        .filters input, .filters select { padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,.12); }
+        .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+        .card { border: 1px solid rgba(0,0,0,.08); border-radius: 14px; padding: 14px; background: white; }
+        .cardLink { text-decoration: none; color: inherit; }
+        .meta { display:flex; gap:10px; align-items:center; font-size: 12px; opacity: .8; margin: 6px 0 10px; }
+        .pill { border: 1px solid rgba(0,0,0,.12); padding: 2px 8px; border-radius: 999px; }
+        .tags { display:flex; gap:8px; flex-wrap: wrap; margin-top: 10px; }
+        .tag { font-size: 12px; opacity: .85; text-decoration: none; }
+        @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .filters { grid-template-columns: 1fr; } }
+    </style>
+</Layout>

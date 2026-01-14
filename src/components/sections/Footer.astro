@@ -3,16 +3,16 @@ import FooterForm from "@ui/forms/FooterForm.astro";
 import ContactInfo from "@common/ContactInfo.astro";
 
 // Props for customization
-const companyName = "DataNova Analytics Inc.";
+const companyName = "Synecto, LLC";
 const companyDescription =
   "DataNova Analytics Inc. is a leading business intelligence and analytics software company founded in 2018, with offices in Boston and Seattle.";
 
 // Contact information for the company
 const contactDetails = {
-  address: "Seattle, WA, 98104",
-  phone: "1 (833) 328-2669",
-  email: "info@datanova.com",
-  website: "www.datanova.com",
+  address: "Newark, DE, 98104",
+  phone: "1 (601) 6888-288",
+  email: "info@synecto.cloud",
+  website: "synecto.cloud",
 };
 
 // Dynamic date for copyright display
@@ -67,16 +67,8 @@ const trademarkNotice =
     >
       {/* Copyright and Crafted By Section */}
       <p class="text-sm text-slate-400/50">
-        &copy; 2018-{copyrightYear}
-        {companyName} Crafted by
-        <a
-          href={craftedBy.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="font-medium underline underline-offset-2 outline-hidden ring-slate-400 transition duration-300 hover:text-slate-400 hover:decoration-dashed focus:outline-hidden focus-visible:ring-3"
-        >
-          {craftedBy.name}
-        </a>
+        &copy; {copyrightYear}
+        {companyName}
       </p>
 
       {/* Trademark Notice */}

@@ -1,13 +1,24 @@
 ---
 export const prerender = true;
 import LandingLayout from "@layout/LandingLayout.astro";
+import Hero from "@sections/HeroSection.astro";
+import FeatureShowcase from "@sections/FeatureShowcase.astro";
+import FeatureBento from "@sections/FeatureBento.astro";
+import FeatureAnimated from "@sections/FeatureAnimated.astro";
+import FeatureGrid from "@sections/FeatureGrid.astro";
+import CTA from "@sections/CTA.astro";
 ---
 
 <LandingLayout>
   <div class="landing">
-    <header class="nav-wrapper">
+    <header class="nav-wrapper reveal fade">
       <div class="container nav-bar">
-        <a class="brand" href="/" data-track="nav_click" data-track-props='{"item":"brand"}'>
+        <a
+          class="brand"
+          href="/"
+          data-track="nav_click"
+          data-track-props='{"item":"brand"}'
+        >
           <span class="brand-badge">W</span>
           <span>
             WeDu
@@ -15,11 +26,32 @@ import LandingLayout from "@layout/LandingLayout.astro";
           </span>
         </a>
         <nav class="nav-links" aria-label="Primary">
-          <a href="#home" data-track="nav_click" data-track-props='{"item":"home"}'>Home</a>
-          <a href="#product" data-track="nav_click" data-track-props='{"item":"product"}'>Product</a>
-          <a href="#pricing" data-track="nav_click" data-track-props='{"item":"pricing"}'>Pricing Plans</a>
-          <a href="#contact" data-track="nav_click" data-track-props='{"item":"contact"}'>Contact</a>
-          <a class="nav-cta" href="#get-started" data-track="nav_click" data-track-props='{"item":"get_started"}'>
+          <a
+            href="#home"
+            data-track="nav_click"
+            data-track-props='{"item":"home"}'>Home</a
+          >
+          <a
+            href="#product"
+            data-track="nav_click"
+            data-track-props='{"item":"product"}'>Product</a
+          >
+          <a
+            href="#pricing"
+            data-track="nav_click"
+            data-track-props='{"item":"pricing"}'>Pricing Plans</a
+          >
+          <a
+            href="#contact"
+            data-track="nav_click"
+            data-track-props='{"item":"contact"}'>Contact</a
+          >
+          <a
+            class="nav-cta"
+            href="#get-started"
+            data-track="nav_click"
+            data-track-props='{"item":"get_started"}'
+          >
             Get Started
           </a>
         </nav>
@@ -28,13 +60,19 @@ import LandingLayout from "@layout/LandingLayout.astro";
 
     <main id="home">
       <section class="container hero">
-        <div>
+        <div class="reveal slide-left">
           <h1>Communicate. Collaborate. Create.</h1>
           <p>
-            WeDu provides an effective and powerful way to manage your projects with modern workflow
-            tools, shared visibility, and real-time collaboration.
+            WeDu provides an effective and powerful way to manage your projects
+            with modern workflow tools, shared visibility, and real-time
+            collaboration.
           </p>
-          <a class="btn-primary" href="#get-started" data-track="cta_click" data-track-props='{"item":"hero_get_started"}'>
+          <a
+            class="btn-primary"
+            href="#get-started"
+            data-track="cta_click"
+            data-track-props='{"item":"hero_get_started"}'
+          >
             Get Started
           </a>
           <div class="feature-row">
@@ -52,8 +90,8 @@ import LandingLayout from "@layout/LandingLayout.astro";
             </span>
           </div>
         </div>
-        <div class="hero-art">
-          <div class="hero-card">
+        <div class="hero-art reveal slide-right">
+          <div class="hero-card parallax" data-parallax="0.08">
             <div class="hero-stack">
               <div class="block alt"></div>
               <div class="block"></div>
@@ -63,39 +101,42 @@ import LandingLayout from "@layout/LandingLayout.astro";
         </div>
       </section>
 
-      <section class="section" id="product">
+      <section class="section reveal fade" id="product">
         <div class="container">
           <h2 class="section-title">What We Offer</h2>
           <p class="section-copy">
-            A complete product stack that keeps your team aligned, organized, and shipping faster.
+            A complete product stack that keeps your team aligned, organized,
+            and shipping faster.
           </p>
           <div class="offer-grid">
-            <article class="offer-card">
+            <article class="offer-card reveal zoom">
               <div class="offer-art"></div>
               <h3 class="offer-title">Workflows That Work</h3>
               <p class="offer-text">
-                Build repeatable processes and keep every team in sync with visual timelines.
+                Build repeatable processes and keep every team in sync with
+                visual timelines.
               </p>
             </article>
-            <article class="offer-card">
+            <article class="offer-card reveal zoom">
               <div class="offer-art"></div>
               <h3 class="offer-title">All-In-One Solution</h3>
               <p class="offer-text">
                 Tasks, docs, approvals, and analytics in a single workspace.
               </p>
             </article>
-            <article class="offer-card">
+            <article class="offer-card reveal zoom">
               <div class="offer-art"></div>
               <h3 class="offer-title">Comprehensive Support</h3>
               <p class="offer-text">
                 Dedicated onboarding plus tailored playbooks for your teams.
               </p>
             </article>
-            <article class="offer-card">
+            <article class="offer-card reveal zoom">
               <div class="offer-art"></div>
               <h3 class="offer-title">Smart Automation Tools</h3>
               <p class="offer-text">
-                Automate status updates, routing, and notifications to keep work moving.
+                Automate status updates, routing, and notifications to keep work
+                moving.
               </p>
             </article>
           </div>
@@ -104,12 +145,17 @@ import LandingLayout from "@layout/LandingLayout.astro";
 
       <section class="section">
         <div class="container split">
-          <div class="illustration-card"></div>
-          <div>
+          <div
+            class="illustration-card reveal slide-left parallax"
+            data-parallax="0.12"
+          >
+          </div>
+          <div class="reveal slide-right">
             <h2 class="section-title">Built for Creatives, by Creatives</h2>
             <p class="section-copy">
-              WeDu helps your team focus on the creative work by simplifying the operational noise.
-              From concept to execution, everything stays in one place.
+              WeDu helps your team focus on the creative work by simplifying the
+              operational noise. From concept to execution, everything stays in
+              one place.
             </p>
             <div class="feature-row">
               <span class="feature-pill">
@@ -129,47 +175,51 @@ import LandingLayout from "@layout/LandingLayout.astro";
         </div>
       </section>
 
-      <section class="section trusted">
+      <section class="section trusted reveal fade">
         <div class="container">
           <h2 class="section-title">Trusted Among Industry Leaders</h2>
           <p class="section-copy">
-            Leading teams use WeDu to bring clarity and speed to their project workflows.
+            Leading teams use WeDu to bring clarity and speed to their project
+            workflows.
           </p>
           <div class="logo-grid">
-            <div class="logo-badge">Meta Definer</div>
-            <div class="logo-badge">Delta Tech</div>
-            <div class="logo-badge">TechMed</div>
-            <div class="logo-badge">Power Core</div>
-            <div class="logo-badge">Strongest Link</div>
-            <div class="logo-badge">COG Industry</div>
-            <div class="logo-badge">A.T. Motion</div>
-            <div class="logo-badge">BOND</div>
+            <div class="logo-badge reveal zoom">Meta Definer</div>
+            <div class="logo-badge reveal zoom">Delta Tech</div>
+            <div class="logo-badge reveal zoom">TechMed</div>
+            <div class="logo-badge reveal zoom">Power Core</div>
+            <div class="logo-badge reveal zoom">Strongest Link</div>
+            <div class="logo-badge reveal zoom">COG Industry</div>
+            <div class="logo-badge reveal zoom">A.T. Motion</div>
+            <div class="logo-badge reveal zoom">BOND</div>
           </div>
         </div>
       </section>
 
-      <section class="section">
+      <section class="section reveal fade">
         <div class="container">
           <h2 class="section-title">What Our Clients Say</h2>
           <div class="testimonial-grid">
-            <article class="testimonial-card">
+            <article class="testimonial-card reveal slide-left">
               <div class="testimonial-header">...</div>
               <p class="testimonial-body">
-                WeDu helped us align design, product, and delivery in one intuitive workflow.
+                WeDu helped us align design, product, and delivery in one
+                intuitive workflow.
               </p>
               <p class="testimonial-author">Deena Levies, Mission Bay</p>
             </article>
-            <article class="testimonial-card">
+            <article class="testimonial-card reveal slide-left">
               <div class="testimonial-header">...</div>
               <p class="testimonial-body">
-                Our team ships twice as fast while maintaining visibility across departments.
+                Our team ships twice as fast while maintaining visibility across
+                departments.
               </p>
               <p class="testimonial-author">Tom Smithenson, Parkmerced</p>
             </article>
-            <article class="testimonial-card">
+            <article class="testimonial-card reveal slide-left">
               <div class="testimonial-header">...</div>
               <p class="testimonial-body">
-                The automation toolkit removed repetitive tasks and kept everyone accountable.
+                The automation toolkit removed repetitive tasks and kept
+                everyone accountable.
               </p>
               <p class="testimonial-author">Tilly Green, Hayes Valley</p>
             </article>
@@ -177,27 +227,36 @@ import LandingLayout from "@layout/LandingLayout.astro";
         </div>
       </section>
 
-      <section class="section pricing" id="pricing">
+      <section class="section pricing reveal fade" id="pricing">
         <div class="container split">
-          <div>
+          <div class="reveal slide-left">
             <h2 class="section-title">Explore Our Pricing Options</h2>
             <p class="section-copy">
-              Transparent plans built for teams of every size. Upgrade when you are ready and keep
-              all your workflows intact.
+              Transparent plans built for teams of every size. Upgrade when you
+              are ready and keep all your workflows intact.
             </p>
-            <a class="btn-primary" href="#get-started" data-track="cta_click" data-track-props='{"item":"pricing_more"}'>
+            <a
+              class="btn-primary"
+              href="#get-started"
+              data-track="cta_click"
+              data-track-props='{"item":"pricing_more"}'
+            >
               See More
             </a>
           </div>
-          <div class="pricing-card">
+          <div class="pricing-card reveal slide-right">
             <div class="pricing-top">
               <span class="pricing-badge">Best Value</span>
               <h3>Premium</h3>
               <p style="margin: 6px 0 14px;">GEL</p>
               <div style="font-size: 38px; font-weight: 700;">50</div>
               <p style="font-size: 12px; opacity: 0.8;">Every month</p>
-              <p style="margin-top: 12px;">Use this plan for growing teams who need advanced control.</p>
-              <button class="btn-primary" style="margin-top: 16px; width: 100%;">Get Started</button>
+              <p style="margin-top: 12px;">
+                Use this plan for growing teams who need advanced control.
+              </p>
+              <button class="btn-primary" style="margin-top: 16px; width: 100%;"
+                >Get Started</button
+              >
             </div>
             <div class="pricing-bottom">
               <div class="pricing-line">● I'm a benefit</div>
@@ -209,17 +268,28 @@ import LandingLayout from "@layout/LandingLayout.astro";
         </div>
       </section>
 
-      <section class="cta-section" id="get-started">
+      <section class="cta-section reveal fade" id="get-started">
         <div class="container">
-          <h2>Get Ready to Maximize Your Productivity With Our Workflow Solutions</h2>
-          <a class="btn-primary" href="#contact" data-track="cta_click" data-track-props='{"item":"cta_get_started"}'>
+          <h2>
+            Get Ready to Maximize Your Productivity With Our Workflow Solutions
+          </h2>
+          <a
+            class="btn-primary"
+            href="#contact"
+            data-track="cta_click"
+            data-track-props='{"item":"cta_get_started"}'
+          >
             Get Started
           </a>
-          <div class="cta-illustration"></div>
+          <div
+            class="cta-illustration reveal zoom parallax"
+            data-parallax="0.06"
+          >
+          </div>
         </div>
       </section>
 
-      <footer class="footer" id="contact">
+      <footer class="footer reveal fade" id="contact">
         <div class="container footer-grid">
           <div>
             <div class="brand">
@@ -250,7 +320,12 @@ import LandingLayout from "@layout/LandingLayout.astro";
             <div class="footer-note">Facebook</div>
             <div style="margin-top: 12px;">
               <label class="footer-note" for="newsletter-email">Email *</label>
-              <input class="input" id="newsletter-email" type="email" placeholder="Email" />
+              <input
+                class="input"
+                id="newsletter-email"
+                type="email"
+                placeholder="Email"
+              />
               <button class="footer-btn" type="button">Subscribe</button>
             </div>
           </div>

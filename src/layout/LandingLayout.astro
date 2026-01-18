@@ -7,7 +7,7 @@ type Props = {
 };
 
 const {
-  title = "WeDu",
+  title = "Ctxfy",
   description = "Communicate. Collaborate. Create.",
   canonical,
   noindex = false,
@@ -16,7 +16,8 @@ const {
 // Public env vars (Astro exposes only PUBLIC_*)
 const AMPLITUDE_API_KEY = import.meta.env.PUBLIC_AMPLITUDE_API_KEY;
 const GROWTHBOOK_CLIENT_KEY = import.meta.env.PUBLIC_GROWTHBOOK_CLIENT_KEY;
-const GROWTHBOOK_API_HOST = import.meta.env.PUBLIC_GROWTHBOOK_API_HOST || "https://cdn.growthbook.io";
+const GROWTHBOOK_API_HOST =
+  import.meta.env.PUBLIC_GROWTHBOOK_API_HOST || "https://cdn.growthbook.io";
 const APP_ENV = import.meta.env.PUBLIC_APP_ENV || "development";
 
 const url = Astro.url;
@@ -85,21 +86,18 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
       }
 
       .landing {
+        border-top: 8px solid black;
         background: var(--landing-surface);
-        border-radius: 18px;
-        margin: 32px;
-        border: 2px solid var(--landing-border);
         overflow: hidden;
       }
 
       .container {
-        max-width: 1120px;
+        max-width: 1400px;
         margin: 0 auto;
         padding: 0 28px;
       }
 
       .nav-wrapper {
-        border-bottom: 2px solid var(--landing-border);
         background: #fff;
       }
 
@@ -108,7 +106,8 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         align-items: center;
         justify-content: space-between;
         gap: 24px;
-        padding: 20px 0;
+        padding: 20px 40px;
+        margin: 0 auto;
       }
 
       .brand {
@@ -223,7 +222,9 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         border-radius: 22px;
         padding: 22px 24px 28px;
         box-shadow: var(--landing-shadow);
-        transition: transform 300ms ease, box-shadow 300ms ease;
+        transition:
+          transform 300ms ease,
+          box-shadow 300ms ease;
       }
 
       .hero-stack {
@@ -270,7 +271,9 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         padding: 18px;
         display: grid;
         gap: 14px;
-        transition: transform 250ms ease, box-shadow 250ms ease;
+        transition:
+          transform 250ms ease,
+          box-shadow 250ms ease;
       }
 
       .offer-art {
@@ -344,7 +347,9 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         text-align: center;
         font-weight: 700;
         background: #fff;
-        transition: transform 220ms ease, box-shadow 220ms ease;
+        transition:
+          transform 220ms ease,
+          box-shadow 220ms ease;
       }
 
       .testimonial-grid {
@@ -361,7 +366,9 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         display: grid;
         gap: 12px;
         padding: 0 0 18px;
-        transition: transform 220ms ease, box-shadow 220ms ease;
+        transition:
+          transform 220ms ease,
+          box-shadow 220ms ease;
       }
 
       .testimonial-header {
@@ -503,12 +510,16 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         border-radius: 8px;
         border: 2px solid #111;
         font-weight: 700;
-        transition: transform 200ms ease, box-shadow 200ms ease;
+        transition:
+          transform 200ms ease,
+          box-shadow 200ms ease;
       }
 
       .nav-cta,
       .btn-primary {
-        transition: transform 200ms ease, box-shadow 200ms ease;
+        transition:
+          transform 200ms ease,
+          box-shadow 200ms ease;
       }
 
       .nav-cta:hover,
@@ -533,7 +544,9 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
       .reveal {
         opacity: 0;
         transform: translateY(18px);
-        transition: opacity 700ms ease, transform 700ms ease;
+        transition:
+          opacity 700ms ease,
+          transform 700ms ease;
         will-change: opacity, transform;
       }
 
@@ -631,12 +644,17 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         try {
           const mod = await import("@amplitude/analytics-browser");
           mod.init(key, undefined, {
-            defaultTracking: { pageViews: true, sessions: true, formInteractions: true },
+            defaultTracking: {
+              pageViews: true,
+              sessions: true,
+              formInteractions: true,
+            },
             logLevel: cfg?.env?.APP_ENV === "production" ? "WARN" : "INFO",
           });
 
           // expose helper
-          window.track = (event, props = {}) => mod.track(event, { ...props, ...page });
+          window.track = (event, props = {}) =>
+            mod.track(event, { ...props, ...page });
           window.track("page_view", { source: "layout" });
 
           return mod;
@@ -671,8 +689,10 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
           gb.setAttributes({
             path: location.pathname,
             referrer: document.referrer || "",
-            utm_source: new URLSearchParams(location.search).get("utm_source") || "",
-            utm_campaign: new URLSearchParams(location.search).get("utm_campaign") || "",
+            utm_source:
+              new URLSearchParams(location.search).get("utm_source") || "",
+            utm_campaign:
+              new URLSearchParams(location.search).get("utm_campaign") || "",
           });
 
           await gb.loadFeatures({ timeout: 1500 });

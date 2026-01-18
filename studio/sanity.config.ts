@@ -4,7 +4,7 @@ import {schemaTypes} from './schemaTypes'
 import {structure} from './deskStructure'
 
 // (опционально) чтобы удобнее было в интерфейсе
-const singletonTypes = new Set(['homePage', 'pricingPage'])
+const singletonTypes = new Set(['homePage', 'pricingPage', 'landingPage'])
 
 export default defineConfig({
   name: 'default',

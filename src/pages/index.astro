@@ -1,24 +1,262 @@
 ---
 export const prerender = true;
-import BaseLayout from "@layout/BaseLayout.astro";
-import Hero from "@sections/HeroSection.astro";
-import FeatureShowcase from "@sections/FeatureShowcase.astro";
-import FeatureBento from "@sections/FeatureBento.astro";
-import FeatureAnimated from "@sections/FeatureAnimated.astro";
-import FeatureGrid from "@sections/FeatureGrid.astro";
-import CTA from "@sections/CTA.astro";
+import LandingLayout from "@layout/LandingLayout.astro";
 ---
 
-<BaseLayout>
-  <Hero />
+<LandingLayout>
+  <div class="landing">
+    <header class="nav-wrapper">
+      <div class="container nav-bar">
+        <a class="brand" href="/" data-track="nav_click" data-track-props='{"item":"brand"}'>
+          <span class="brand-badge">W</span>
+          <span>
+            WeDu
+            <span class="brand-sub">Communicate. Collaborate. Create.</span>
+          </span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#home" data-track="nav_click" data-track-props='{"item":"home"}'>Home</a>
+          <a href="#product" data-track="nav_click" data-track-props='{"item":"product"}'>Product</a>
+          <a href="#pricing" data-track="nav_click" data-track-props='{"item":"pricing"}'>Pricing Plans</a>
+          <a href="#contact" data-track="nav_click" data-track-props='{"item":"contact"}'>Contact</a>
+          <a class="nav-cta" href="#get-started" data-track="nav_click" data-track-props='{"item":"get_started"}'>
+            Get Started
+          </a>
+        </nav>
+      </div>
+    </header>
 
-  <FeatureShowcase />
+    <main id="home">
+      <section class="container hero">
+        <div>
+          <h1>Communicate. Collaborate. Create.</h1>
+          <p>
+            WeDu provides an effective and powerful way to manage your projects with modern workflow
+            tools, shared visibility, and real-time collaboration.
+          </p>
+          <a class="btn-primary" href="#get-started" data-track="cta_click" data-track-props='{"item":"hero_get_started"}'>
+            Get Started
+          </a>
+          <div class="feature-row">
+            <span class="feature-pill">
+              <span class="feature-icon">S</span>
+              Speed & Security
+            </span>
+            <span class="feature-pill">
+              <span class="feature-icon">F</span>
+              Flexibility & Scalability
+            </span>
+            <span class="feature-pill">
+              <span class="feature-icon">B</span>
+              Better Collaboration
+            </span>
+          </div>
+        </div>
+        <div class="hero-art">
+          <div class="hero-card">
+            <div class="hero-stack">
+              <div class="block alt"></div>
+              <div class="block"></div>
+              <div class="block"></div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-  <FeatureBento />
+      <section class="section" id="product">
+        <div class="container">
+          <h2 class="section-title">What We Offer</h2>
+          <p class="section-copy">
+            A complete product stack that keeps your team aligned, organized, and shipping faster.
+          </p>
+          <div class="offer-grid">
+            <article class="offer-card">
+              <div class="offer-art"></div>
+              <h3 class="offer-title">Workflows That Work</h3>
+              <p class="offer-text">
+                Build repeatable processes and keep every team in sync with visual timelines.
+              </p>
+            </article>
+            <article class="offer-card">
+              <div class="offer-art"></div>
+              <h3 class="offer-title">All-In-One Solution</h3>
+              <p class="offer-text">
+                Tasks, docs, approvals, and analytics in a single workspace.
+              </p>
+            </article>
+            <article class="offer-card">
+              <div class="offer-art"></div>
+              <h3 class="offer-title">Comprehensive Support</h3>
+              <p class="offer-text">
+                Dedicated onboarding plus tailored playbooks for your teams.
+              </p>
+            </article>
+            <article class="offer-card">
+              <div class="offer-art"></div>
+              <h3 class="offer-title">Smart Automation Tools</h3>
+              <p class="offer-text">
+                Automate status updates, routing, and notifications to keep work moving.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
 
-  <FeatureAnimated />
+      <section class="section">
+        <div class="container split">
+          <div class="illustration-card"></div>
+          <div>
+            <h2 class="section-title">Built for Creatives, by Creatives</h2>
+            <p class="section-copy">
+              WeDu helps your team focus on the creative work by simplifying the operational noise.
+              From concept to execution, everything stays in one place.
+            </p>
+            <div class="feature-row">
+              <span class="feature-pill">
+                <span class="feature-icon">A</span>
+                All-in-One Toolkit
+              </span>
+              <span class="feature-pill">
+                <span class="feature-icon">I</span>
+                Integrated File Sharing
+              </span>
+              <span class="feature-pill">
+                <span class="feature-icon">T</span>
+                Total Design Freedom
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
 
-  <FeatureGrid />
+      <section class="section trusted">
+        <div class="container">
+          <h2 class="section-title">Trusted Among Industry Leaders</h2>
+          <p class="section-copy">
+            Leading teams use WeDu to bring clarity and speed to their project workflows.
+          </p>
+          <div class="logo-grid">
+            <div class="logo-badge">Meta Definer</div>
+            <div class="logo-badge">Delta Tech</div>
+            <div class="logo-badge">TechMed</div>
+            <div class="logo-badge">Power Core</div>
+            <div class="logo-badge">Strongest Link</div>
+            <div class="logo-badge">COG Industry</div>
+            <div class="logo-badge">A.T. Motion</div>
+            <div class="logo-badge">BOND</div>
+          </div>
+        </div>
+      </section>
 
-  <CTA />
-</BaseLayout>
+      <section class="section">
+        <div class="container">
+          <h2 class="section-title">What Our Clients Say</h2>
+          <div class="testimonial-grid">
+            <article class="testimonial-card">
+              <div class="testimonial-header">...</div>
+              <p class="testimonial-body">
+                WeDu helped us align design, product, and delivery in one intuitive workflow.
+              </p>
+              <p class="testimonial-author">Deena Levies, Mission Bay</p>
+            </article>
+            <article class="testimonial-card">
+              <div class="testimonial-header">...</div>
+              <p class="testimonial-body">
+                Our team ships twice as fast while maintaining visibility across departments.
+              </p>
+              <p class="testimonial-author">Tom Smithenson, Parkmerced</p>
+            </article>
+            <article class="testimonial-card">
+              <div class="testimonial-header">...</div>
+              <p class="testimonial-body">
+                The automation toolkit removed repetitive tasks and kept everyone accountable.
+              </p>
+              <p class="testimonial-author">Tilly Green, Hayes Valley</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section pricing" id="pricing">
+        <div class="container split">
+          <div>
+            <h2 class="section-title">Explore Our Pricing Options</h2>
+            <p class="section-copy">
+              Transparent plans built for teams of every size. Upgrade when you are ready and keep
+              all your workflows intact.
+            </p>
+            <a class="btn-primary" href="#get-started" data-track="cta_click" data-track-props='{"item":"pricing_more"}'>
+              See More
+            </a>
+          </div>
+          <div class="pricing-card">
+            <div class="pricing-top">
+              <span class="pricing-badge">Best Value</span>
+              <h3>Premium</h3>
+              <p style="margin: 6px 0 14px;">GEL</p>
+              <div style="font-size: 38px; font-weight: 700;">50</div>
+              <p style="font-size: 12px; opacity: 0.8;">Every month</p>
+              <p style="margin-top: 12px;">Use this plan for growing teams who need advanced control.</p>
+              <button class="btn-primary" style="margin-top: 16px; width: 100%;">Get Started</button>
+            </div>
+            <div class="pricing-bottom">
+              <div class="pricing-line">● I'm a benefit</div>
+              <div class="pricing-line">● I'm a benefit</div>
+              <div class="pricing-line">● I'm a benefit</div>
+              <div class="pricing-line">● I'm a benefit</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta-section" id="get-started">
+        <div class="container">
+          <h2>Get Ready to Maximize Your Productivity With Our Workflow Solutions</h2>
+          <a class="btn-primary" href="#contact" data-track="cta_click" data-track-props='{"item":"cta_get_started"}'>
+            Get Started
+          </a>
+          <div class="cta-illustration"></div>
+        </div>
+      </section>
+
+      <footer class="footer" id="contact">
+        <div class="container footer-grid">
+          <div>
+            <div class="brand">
+              <span class="brand-badge">W</span>
+              <span>
+                WeDu
+                <span class="brand-sub">Communicate. Collaborate. Create.</span>
+              </span>
+            </div>
+          </div>
+          <div>
+            <div class="footer-title">Contact</div>
+            <div class="footer-note">500 Terry Francine Street</div>
+            <div class="footer-note">San Francisco, CA 94158</div>
+            <div class="footer-note">Sales: info@my-site.com</div>
+            <div class="footer-note">Customer Care: info@my-site.com</div>
+          </div>
+          <div>
+            <div class="footer-title">Quick Links</div>
+            <div class="footer-note">Terms & Conditions</div>
+            <div class="footer-note">Privacy Policy</div>
+            <div class="footer-note">Contact</div>
+          </div>
+          <div>
+            <div class="footer-title">Follow</div>
+            <div class="footer-note">LinkedIn</div>
+            <div class="footer-note">YouTube</div>
+            <div class="footer-note">Facebook</div>
+            <div style="margin-top: 12px;">
+              <label class="footer-note" for="newsletter-email">Email *</label>
+              <input class="input" id="newsletter-email" type="email" placeholder="Email" />
+              <button class="footer-btn" type="button">Subscribe</button>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">(c) Ctxfy</div>
+      </footer>
+    </main>
+  </div>
+</LandingLayout>

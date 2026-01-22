@@ -3,7 +3,7 @@ import type {StructureResolver} from 'sanity/structure'
 import {orderableDocumentListDeskItem} from '@sanity/orderable-document-list' // optional, если захочешь drag&drop порядок
 // Если не хочешь orderable — можно удалить импорт и блоки с orderable.
 
-const singletonTypes = new Set(['homePage', 'pricingPage', 'landingPage'])
+const singletonTypes = new Set(['homePage', 'pricingPage', 'landingPage', 'navigationSettings'])
 
 export const structure: StructureResolver = (S, context) => {
   // Helper: singleton item
@@ -21,6 +21,7 @@ export const structure: StructureResolver = (S, context) => {
       singleton('Home', 'homePage', 'home'),
       singleton('Landing', 'landingPage', 'landing'),
       singleton('Pricing', 'pricingPage', 'pricing'),
+      singleton('Navigation', 'navigationSettings', 'navigation'),
 
       S.divider(),
 

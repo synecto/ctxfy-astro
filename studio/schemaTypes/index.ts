@@ -6,6 +6,16 @@ import {docCategory} from './docCategory'
 import {pricingPage} from './pricingPage'
 import {landingPage} from './landingPage'
 import {
+  navigationMenuItem,
+  navigationMenuSection,
+  navigationFeaturesMenu,
+  navigationPlatformItem,
+  navigationPlatformMenu,
+  navigationSupportMenu,
+  navigationDownloadsMenu,
+  navigationSettings,
+} from './navigation'
+import {
   landingCta,
   landingFooter,
   landingFooterLink,
@@ -44,4 +54,12 @@ export const schemaTypes = [
   docCategory,
   doc,
   pricingPage,
+  navigationMenuItem,
+  navigationMenuSection,
+  navigationFeaturesMenu,
+  navigationPlatformItem,
+  navigationPlatformMenu,
+  navigationSupportMenu,
+  navigationDownloadsMenu,
+  navigationSettings,
 ]

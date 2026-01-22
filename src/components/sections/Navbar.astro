@@ -4,12 +4,23 @@ import Support from "@megaMenu/Support.astro";
 import Platform from "@megaMenu/Platform.astro";
 import Features from "@megaMenu/Features.astro";
 import Button from "@ui/Button.astro";
-import { navigationLinks } from "@utils/navigation";
+import { getNavigationData } from "@lib/query/navigation";
 
 const currentPath = Astro.url.pathname;
 
-// Call-to-action configuration for the primary button
-const primaryCTA = { text: "Try Free", href: "https://github.com/mearashadowfax/DataNova" };
+// Get navigation data from Sanity
+const navigationData = await getNavigationData();
+
+// Fallback to default values if Sanity data is not available
+const navigationLinks = navigationData?.primaryLinks || [
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
+
+const primaryCTA = navigationData?.primaryCTA || { 
+  text: "Try Free", 
+  href: "https://github.com/mearashadowfax/DataNova" 
+};
 ---
 
 <header

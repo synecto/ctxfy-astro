@@ -113,6 +113,10 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
 
       .nav-wrapper {
         background: #fff;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       }
 
       .nav-bar {
@@ -123,6 +127,7 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         padding: 20px 40px;
         margin: 0 auto;
         position: relative;
+        max-width: 1400px;
       }
 
       .brand {
@@ -193,11 +198,11 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
       }
 
       .nav-item {
-        position: static;
+        position: relative;
       }
 
       .nav-item.has-mega {
-        position: static;
+        position: relative;
       }
 
       .nav-trigger {
@@ -219,9 +224,9 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
 
       .mega-menu {
         position: absolute;
-        top: calc(100% - 8px);
+        top: calc(100% + 8px);
         left: 50%;
-        transform: translate(-50%, 8px);
+        transform: translate(-50%, 0);
         width: min(1100px, 92vw);
         background: #f7f7f7;
         border: 2px solid var(--landing-border);
@@ -233,7 +238,7 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         transition:
           opacity 180ms ease,
           transform 200ms ease;
-        z-index: 20;
+        z-index: 60;
       }
 
       .mega-menu::before {
@@ -250,6 +255,12 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         opacity: 1;
         pointer-events: auto;
         transform: translate(-50%, 0);
+      }
+
+      /* Ensure content doesn't overlap with sticky nav */
+      main {
+        position: relative;
+        z-index: 1;
       }
 
       .mega-panel {

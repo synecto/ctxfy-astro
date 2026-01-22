@@ -10,7 +10,8 @@
     "build": "sanity build",
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy",
-    "seed-landing": "sanity exec ./seed/landingPage.ts --with-user-token"
+    "seed-landing": "sanity exec ./seed/landingPage.ts --with-user-token",
+    "seed-navigation": "sanity exec ./seed/navigation.ts --with-user-token"
   },
   "keywords": [
     "sanity"

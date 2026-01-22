@@ -1,4 +1,7 @@
 ---
+import LandingNav from "@sections/LandingNav.astro";
+import LandingFooter from "@sections/LandingFooter.astro";
+
 type Props = {
   title?: string;
   description?: string;
@@ -47,14 +50,14 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Zalando+Sans+SemiExpanded:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Zalando+Sans+SemiExpanded:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet" />
     
     <style is:global>
       :root {
         color-scheme: light;
-        --landing-bg: #f9f7f4;
+        --landing-bg: #ffffff;
         --landing-surface: #ffffff;
         --landing-ink: #111111;
         --landing-muted: #6f6f6f;
@@ -65,6 +68,30 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         --landing-card: #fefefe;
         --landing-shadow: 0 24px 50px -36px rgba(0, 0, 0, 0.35);
         --landing-font: "DM Sans", "Work Sans", ui-sans-serif, system-ui;
+        --nav-bg: #ffffff;
+        --mega-bg: #f7f7f7;
+      }
+
+      /* Dark theme deactivated for now
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --landing-bg: #0a0a0a;
+          --landing-surface: #111111;
+          --landing-ink: #f9f7f4;
+          --landing-muted: #a1a1a1;
+          --landing-border: #333333;
+          --landing-card: #1a1a1a;
+          --landing-shadow: 0 24px 50px -36px rgba(0, 0, 0, 0.7);
+          --landing-pink: #2a1a24;
+          --nav-bg: #111111;
+          --mega-bg: #1a1a1a;
+        }
+      }
+      */
+
+      html {
+        scroll-behavior: smooth;
+        scroll-snap-type: y mandatory;
       }
 
 
@@ -88,6 +115,19 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         color: var(--landing-ink);
       }
 
+      #home > section,
+      .footer {
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+      }
+
+      #home > section {
+        min-height: calc(100vh - 80px);
+        display: grid;
+        align-items: center;
+        padding-top: 20px;
+        padding-bottom: 20px;
+      }
       img,
       svg {
         max-width: 100%;
@@ -100,9 +140,8 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
       }
 
       .landing {
-        border-top: 8px solid black;
+        border-top: 8px solid var(--landing-ink);
         background: var(--landing-surface);
-        overflow: hidden;
       }
 
       .container {
@@ -112,11 +151,11 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
       }
 
       .nav-wrapper {
-        background: #fff;
+        background: var(--nav-bg);
         position: sticky;
         top: 0;
         z-index: 50;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid var(--landing-border);
       }
 
       .nav-bar {
@@ -142,8 +181,8 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         width: 34px;
         height: 34px;
         border-radius: 8px;
-        background: #111;
-        color: #fff;
+        background: var(--landing-ink);
+        color: var(--landing-surface);
         display: grid;
         place-items: center;
         font-size: 18px;
@@ -193,8 +232,8 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
       .nav-link:hover,
       .nav-trigger:hover,
       .nav-login:hover {
-        background: #f2f2f2;
-        color: #111;
+        background: var(--landing-bg);
+        color: var(--landing-ink);
       }
 
       .nav-item {
@@ -228,7 +267,7 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         left: 50%;
         transform: translate(-50%, 0);
         width: min(1100px, 92vw);
-        background: #f7f7f7;
+        background: var(--mega-bg);
         border: 2px solid var(--landing-border);
         border-radius: 28px;
         padding: 22px;
@@ -368,9 +407,9 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
       }
 
       .nav-pill.primary {
-        background: #111;
-        color: #fff;
-        border-color: #111;
+        background: var(--landing-ink);
+        color: var(--landing-surface);
+        border-color: var(--landing-ink);
       }
 
       .nav-cta {
@@ -409,10 +448,10 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         justify-content: center;
         padding: 10px 18px;
         border-radius: 8px;
-        background: #111;
-        color: #fff;
+        background: var(--landing-ink);
+        color: var(--landing-surface);
         font-weight: 700;
-        border: 2px solid #111;
+        border: 2px solid var(--landing-ink);
       }
 
       .feature-row {
@@ -447,7 +486,7 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
 
       .hero-card {
         width: min(100%, 360px);
-        background: #fff;
+        background: var(--landing-card);
         border: 2px solid var(--landing-border);
         border-radius: 22px;
         padding: 22px 24px 28px;
@@ -470,7 +509,7 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
       }
 
       .hero-stack .block.alt {
-        background: #111;
+        background: var(--landing-ink);
       }
 
       .section {
@@ -576,7 +615,7 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         padding: 18px 14px;
         text-align: center;
         font-weight: 700;
-        background: #fff;
+        background: var(--landing-card);
         transition:
           transform 220ms ease,
           box-shadow 220ms ease;
@@ -592,7 +631,7 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         border: 2px solid var(--landing-border);
         border-radius: 14px;
         overflow: hidden;
-        background: #fff;
+        background: var(--landing-card);
         display: grid;
         gap: 12px;
         padding: 0 0 18px;
@@ -628,8 +667,8 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         border: 2px solid var(--landing-border);
         border-radius: 16px;
         overflow: hidden;
-        background: #111;
-        color: #fff;
+        background: var(--landing-ink);
+        color: var(--landing-surface);
       }
 
       .pricing-top {
@@ -728,7 +767,8 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         border: 2px solid var(--landing-border);
         border-radius: 8px;
         padding: 8px 10px;
-        background: #fff;
+        background: var(--landing-card);
+        color: var(--landing-ink);
         width: 100%;
       }
 
@@ -865,13 +905,13 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
     </style>
 
     <!-- Runtime config exposed for client scripts -->
-    <script is:inline>
+    <script is:inline define:vars={{ AMPLITUDE_API_KEY, GROWTHBOOK_CLIENT_KEY, GROWTHBOOK_API_HOST, APP_ENV }}>
       window.__APP__ = {
-        env: { APP_ENV: "{APP_ENV}" },
-        amplitude: { apiKey: "{AMPLITUDE_API_KEY}" || "" },
+        env: { APP_ENV: APP_ENV },
+        amplitude: { apiKey: AMPLITUDE_API_KEY || "" },
         growthbook: {
-          clientKey: "{GROWTHBOOK_CLIENT_KEY}",
-          apiHost: "{GROWTHBOOK_API_HOST}",
+          clientKey: GROWTHBOOK_CLIENT_KEY,
+          apiHost: GROWTHBOOK_API_HOST,
         },
       };
     </script>
@@ -1028,6 +1068,8 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
   </head>
 
   <body class="landing-body">
+    <LandingNav />
     <slot />
+    <LandingFooter />
   </body>
 </html>

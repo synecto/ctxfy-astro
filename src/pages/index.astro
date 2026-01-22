@@ -1,7 +1,6 @@
 ---
 export const prerender = true;
 import LandingLayout from "@layout/LandingLayout.astro";
-import LandingNav from "@sections/LandingNav.astro";
 import LandingHero from "@sections/LandingHero.astro";
 import LandingOffers from "@sections/LandingOffers.astro";
 import LandingSplit from "@sections/LandingSplit.astro";
@@ -9,22 +8,16 @@ import LandingTrusted from "@sections/LandingTrusted.astro";
 import LandingTestimonials from "@sections/LandingTestimonials.astro";
 import LandingPricing from "@sections/LandingPricing.astro";
 import LandingCTA from "@sections/LandingCTA.astro";
-import LandingFooter from "@sections/LandingFooter.astro";
 ---
 
 <LandingLayout>
-  <div class="landing">
-    <LandingNav />
-
-    <main id="home">
-      <LandingHero />
-      <LandingOffers />
-      <LandingSplit />
-      <LandingTrusted />
-      <LandingTestimonials />
-      <LandingPricing />
-      <LandingCTA />
-      <LandingFooter />
-    </main>
-  </div>
+  <main id="home">
+    <LandingHero />
+    <LandingOffers />
+    <LandingSplit />
+    <LandingTrusted />
+    <LandingTestimonials />
+    <LandingPricing />
+    <LandingCTA />
+  </main>
 </LandingLayout>

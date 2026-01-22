@@ -79,6 +79,7 @@
   h4,
   .dm-sans {
     @apply font-dm-sans;
+  
   }
 
   button:not(:disabled),

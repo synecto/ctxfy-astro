@@ -1,0 +1,450 @@
+{
+  "$id": "https://cerses.com/schemas/feature.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Feature Schema",
+  "description": "Audit-ready Draft-07 schema for a single product Feature. A Feature is a user-facing or platform-facing unit of functionality (more granular than a capability), designed to be linkable to capabilities and usable as context for downstream generation (e.g., Lite JTBD candidates) without describing UI changes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "featureId",
+    "name",
+    "description",
+    "featureType",
+    "surfaces",
+    "valuePrimitives",
+    "inputs",
+    "outputs",
+    "maturity"
+  ],
+  "properties": {
+    "featureId": {
+      "type": "string",
+      "pattern": "^[a-z0-9_\\-]{6,64}$",
+      "description": "Stable identifier for linking and mapping (snake_case or kebab-case)."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 4,
+      "description": "Short, UI-friendly feature name."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 40,
+      "description": "Plain-language description of what the feature enables (avoid slogans; avoid 'we are best'; avoid proposing new UI)."
+    },
+    "featureType": {
+      "type": "string",
+      "enum": [
+        "ui",
+        "api",
+        "sdk",
+        "cli",
+        "integration",
+        "automation",
+        "analytics",
+        "security",
+        "governance",
+        "billing",
+        "performance",
+        "workflow"
+      ],
+      "description": "Stable classifier for the feature's primary nature."
+    },
+    "surfaces": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary"],
+      "properties": {
+        "primary": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "webapp",
+              "api",
+              "sdk",
+              "cli",
+              "webhook",
+              "plugin",
+              "browser_extension",
+              "integration_marketplace"
+            ]
+          },
+          "description": "Primary access surfaces for this feature."
+        },
+        "ecosystems": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "examples": [["Python", "Node.js", "LangChain", "LlamaIndex", "Zapier"]],
+          "description": "Common ecosystems/integration points (optional, open-ended)."
+        }
+      },
+      "description": "Where/how this feature is used or accessed."
+    },
+    "valuePrimitives": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "speed_time_saving",
+          "cost_reduction",
+          "quality_accuracy",
+          "risk_reduction",
+          "reliability_uptime",
+          "visibility_observability",
+          "automation",
+          "compliance_governance",
+          "collaboration",
+          "scalability",
+          "conversion_revenue",
+          "developer_experience"
+        ]
+      },
+      "description": "Atomic value types this feature contributes to (used for inferring outcomes/metrics)."
+    },
+    "inputs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "examples": [["logs", "documents", "API requests", "chat history"]],
+      "description": "What the user/system must provide for the feature to work."
+    },
+    "outputs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "examples": [["report", "alert", "dashboard", "structured dataset"]],
+      "description": "What the user/system gets back (artifacts, signals, actions)."
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["privacy", "setupEffort"],
+      "properties": {
+        "privacy": {
+          "type": "string",
+          "enum": ["low", "medium", "high", "restricted"],
+          "description": "Typical data sensitivity for this feature."
+        },
+        "setupEffort": {
+          "type": "string",
+          "enum": ["minutes", "hours", "days", "weeks"],
+          "description": "Typical effort to get first value using this feature."
+        },
+        "latencySensitivity": {
+          "type": "string",
+          "enum": ["none", "low", "medium", "high", "critical"],
+          "description": "How much added latency would break adoption (optional)."
+        },
+        "operationalOverhead": {
+          "type": "string",
+          "enum": ["none", "low", "medium", "high"],
+          "description": "Perceived ongoing maintenance overhead (optional)."
+        },
+        "mustNot": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Hard prohibitions / trust breakers (optional but recommended)."
+        },
+        "nonGoals": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Explicit non-goals to prevent overpromising (optional but recommended)."
+        }
+      },
+      "description": "Adoption boundaries and constraints for realistic downstream reasoning."
+    },
+    "linkedCapabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9_\\-]{6,64}$"
+      },
+      "description": "Optional list of capabilityIds this feature supports."
+    },
+    "limitations": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Known limitations/guardrails (optional)."
+    },
+    "dependencies": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/dependency"
+      },
+      "description": "What must exist for this feature to work (optional)."
+    },
+    "evidenceArtifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/evidenceArtifact"
+      },
+      "description": "Available proof artifacts to ground claims (optional)."
+    },
+    "maturity": {
+      "type": "string",
+      "enum": ["concept", "beta", "ga", "mature", "deprecated"],
+      "description": "Maturity stage for this feature."
+    },
+    "tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Optional tags for clustering (e.g., 'observability', 'automation', 'security')."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes about assumptions, scope, or caveats."
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Optional extension point for non-contract metadata. Not used for audit/dedupe unless referenced explicitly."
+    }
+  },
+  "definitions": {
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "name"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["internal_feature", "internal_capability", "third_party", "data_source", "infrastructure"]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 2
+        },
+        "why": {
+          "type": "string",
+          "description": "Why this dependency exists (optional)."
+        }
+      }
+    },
+    "evidenceArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "description"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["demo", "screenshot", "benchmark", "case_study", "testimonial", "doc", "template"]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 10
+        },
+        "whereUsed": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": ["ad", "landing", "onboarding", "in_product", "sales_deck", "retargeting"]
+          }
+        }
+      }
+    }
+  },
+  "x-semantic": {
+    "intent": "feature",
+    "schemaFamily": "gtm-pipeline",
+    "version": "1.0"
+  },
+  "x-audit": {
+    "intent": "feature",
+    "mode": "audit-ready",
+    "version": "1.0",
+    "constraints": {
+      "noProductUIChanges": true
+    },
+    "semanticPaths": {
+      "label": ["name"],
+      "description": ["description"],
+      "featureId": ["featureId"],
+      "featureType": ["featureType"],
+      "surfaces": ["surfaces.primary"],
+      "ecosystems": ["surfaces.ecosystems"],
+      "valuePrimitives": ["valuePrimitives"],
+      "inputs": ["inputs"],
+      "outputs": ["outputs"],
+      "constraints": ["constraints"],
+      "limitations": ["limitations"],
+      "dependencies": ["dependencies"],
+      "linkedCapabilities": ["linkedCapabilities"],
+      "evidence": ["evidenceArtifacts"],
+      "maturity": ["maturity"],
+      "tags": ["tags"]
+    },
+    "dedupe": {
+      "strategy": "semantic",
+      "keys": [
+        "name",
+        "featureType",
+        "surfaces.primary",
+        "valuePrimitives",
+        "inputs",
+        "outputs",
+        "linkedCapabilities"
+      ],
+      "nearDuplicateHeuristics": {
+        "considerDuplicateIfSameNameAndSamePrimarySurfaces": true,
+        "considerDuplicateIfSameOutputsAndSameFeatureType": true,
+        "minDistinctElements": {
+          "valuePrimitives": 1,
+          "inputs": 1,
+          "outputs": 1
+        }
+      }
+    },
+    "criticalFlags": {
+      "horoscopeEffect": {
+        "description": "Feature описана как лозунг/обещание без конкретного действия и контуров реальности.",
+        "checkPaths": ["description", "inputs", "outputs", "valuePrimitives"],
+        "genericPhrasesBlacklist": [
+          "улучшить эффективность",
+          "оптимизировать процессы",
+          "быть лучше конкурентов",
+          "получить максимальную ценность",
+          "трансформировать бизнес",
+          "решение для всех"
+        ],
+        "requireConcreteSignals": {
+          "mustReferenceAtLeastOne": ["inputs", "outputs", "surfaces.primary"],
+          "note": "Если нет понятных входов/выходов/поверхностей — слишком абстрактно."
+        }
+      },
+      "unverifiableSignals": {
+        "description": "Утверждения не проверяются данными/демо/артефактами и не опираются на наблюдаемые входы/выходы.",
+        "checkPaths": ["description", "evidenceArtifacts[*].description", "limitations[*]"],
+        "unverifiablePatterns": [
+          "ценим инновации",
+          "хотим стать лидерами",
+          "лучший в классе",
+          "революционное решение"
+        ],
+        "mustHaveEvidenceWhenMakingPerformanceClaims": true
+      },
+      "missingRealityContours": {
+        "description": "Нет контуров реальности: входы/выходы/ограничения слишком бедные для downstream задач.",
+        "requiredSignals": [
+          { "path": "inputs", "minItems": 1 },
+          { "path": "outputs", "minItems": 1 },
+          { "path": "valuePrimitives", "minItems": 1 }
+        ]
+      },
+      "logicalIncoherence": {
+        "description": "Внутренние несостыковки (например, deprecated, но описано как primary; или constraints противоречат обещаемым outputs).",
+        "checks": [
+          {
+            "if": { "path": "maturity", "equals": "deprecated" },
+            "thenExpect": [
+              {
+                "path": "notes",
+                "mustExist": true,
+                "note": "Deprecated features should include notes about replacement/migration context."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "scoringRubric": {
+      "scale": 100,
+      "criticalFailCap": 20,
+      "criteria": [
+        {
+          "key": "specificity",
+          "weight": 30,
+          "signals": ["description", "inputs", "outputs", "featureType"],
+          "highScoreConditions": [
+            "description describes a concrete enabling action and expected outputs",
+            "inputs and outputs are non-empty and specific",
+            "featureType matches described behavior"
+          ]
+        },
+        {
+          "key": "reality_contours",
+          "weight": 25,
+          "signals": ["constraints", "limitations", "dependencies"],
+          "highScoreConditions": [
+            "constraints include privacy and setupEffort",
+            "limitations are present when feature has clear boundaries",
+            "dependencies (if present) explain what must exist"
+          ]
+        },
+        {
+          "key": "linkability",
+          "weight": 15,
+          "signals": ["featureId", "linkedCapabilities", "tags", "surfaces.primary"],
+          "highScoreConditions": [
+            "featureId matches required pattern",
+            "linkedCapabilities used when feature clearly supports a capability",
+            "surfaces.primary present and stable"
+          ]
+        },
+        {
+          "key": "evidence_grounding",
+          "weight": 15,
+          "signals": ["evidenceArtifacts"],
+          "highScoreConditions": [
+            "evidenceArtifacts present when description implies measurable claims",
+            "artifact descriptions are specific enough to be used downstream"
+          ]
+        },
+        {
+          "key": "completeness_consistency",
+          "weight": 15,
+          "signals": [
+            "required",
+            "additionalProperties",
+            "definitions",
+            "constraints.privacy",
+            "constraints.setupEffort",
+            "valuePrimitives"
+          ],
+          "highScoreConditions": [
+            "all required fields present",
+            "no extra fields when additionalProperties=false",
+            "enums respected and arrays meet minItems/uniqueItems"
+          ]
+        }
+      ]
+    }
+  }
+}

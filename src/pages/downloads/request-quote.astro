@@ -1,13 +1,13 @@
 ---
 export const prerender = true;
-import BaseLayout from "@layout/BaseLayout.astro";
+import Layout from "@layout/Layout.astro";
 import ContactFormAlt from "@ui/forms/ContactFormAlt.astro";
 const title = "Request a Custom Quote";
 const subTitle =
   "Provide your contact details, the required number of licenses/users, and any additional information or questions. We’ll send you a tailored quote promptly.";
 ---
 
-<BaseLayout>
+<Layout>
   <section class="bg-linear-to-bl/oklch from-teal-200 via-transparent to-white">
     <div class="mx-auto max-w-[85rem] px-4 pb-28 pt-48 sm:px-6 lg:px-8">
       <div class="mb-10 max-w-2xl lg:mb-14">
@@ -75,4 +75,4 @@ const subTitle =
       })();
     });
   </script>
-</BaseLayout>
+</Layout>

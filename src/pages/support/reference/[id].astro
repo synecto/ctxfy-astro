@@ -1,5 +1,5 @@
 ---
-import BaseLayout from "@layout/BaseLayout.astro";
+import Layout from "@layout/Layout.astro";
 import Icon from "@ui/icons/Icon.astro";
 import PostFeedback from "@common/PostFeedback.svelte";
 import { formatDate } from "@utils/utils";
@@ -28,7 +28,7 @@ const readingTime = getReadingTime(post.body ?? "");
 const slug = id;
 ---
 
-<BaseLayout>
+<Layout>
   <section class="mx-auto max-w-[85rem] px-4 py-24 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-(--breakpoint-xl)">
       <div class="grid gap-8 md:grid-cols-4 lg:gap-12">
@@ -165,4 +165,4 @@ const slug = id;
     document.addEventListener("astro:page-load", safeInitTOC);
     document.addEventListener("astro:before-swap", cleanup);
   </script>
-</BaseLayout>
+</Layout>

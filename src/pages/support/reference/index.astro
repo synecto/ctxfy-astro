@@ -1,5 +1,5 @@
 ---
-import BaseLayout from "@layout/BaseLayout.astro";
+import Layout from "@layout/Layout.astro";
 
 import { getCollection } from "astro:content";
 
@@ -15,7 +15,7 @@ export const pageContent = {
 };
 ---
 
-<BaseLayout>
+<Layout>
   <section class="mx-auto max-w-[85rem] px-4 pb-12 pt-48 sm:px-6 lg:px-8">
     <div class="max-w-7xl">
       <div class="mx-auto max-w-3xl lg:mx-0">
@@ -76,4 +76,4 @@ export const pageContent = {
       }
     </div>
   </section>
-</BaseLayout>
+</Layout>

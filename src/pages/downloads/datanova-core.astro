@@ -1,6 +1,6 @@
 ---
 export const prerender = true;
-import BaseLayout from "@layout/BaseLayout.astro";
+import Layout from "@layout/Layout.astro";
 import Icon from "@ui/icons/Icon.astro";
 
 // Hero
@@ -111,7 +111,7 @@ const largeInfoSection = {
 };
 ---
 
-<BaseLayout>
+<Layout>
   <section class="mx-auto max-w-[85rem] px-4 pb-12 pt-40 sm:px-6 lg:px-8">
     <div class="max-w-7xl">
       <div class="mx-auto max-w-2xl lg:mx-0">
@@ -300,4 +300,4 @@ const largeInfoSection = {
       pointer-events: none;
     }
   </style>
-</BaseLayout>
+</Layout>

@@ -1,6 +1,6 @@
 ---
 export const prerender = true;
-import BaseLayout from "@layout/BaseLayout.astro";
+import Layout from "@layout/Layout.astro";
 import Hero from "@sections/HeroSection.astro";
 import FeatureShowcase from "@sections/FeatureShowcase.astro";
 import FeatureBento from "@sections/FeatureBento.astro";
@@ -9,7 +9,7 @@ import FeatureGrid from "@sections/FeatureGrid.astro";
 import CTA from "@sections/CTA.astro";
 ---
 
-<BaseLayout>
+<Layout>
   <Hero />
 
   <FeatureShowcase />
@@ -21,4 +21,4 @@ import CTA from "@sections/CTA.astro";
   <FeatureGrid />
 
   <CTA />
-</BaseLayout>
+</Layout>

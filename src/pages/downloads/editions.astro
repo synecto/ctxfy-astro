@@ -1,6 +1,6 @@
 ---
 export const prerender = true;
-import BaseLayout from "@layout/BaseLayout.astro";
+import Layout from "@layout/Layout.astro";
 import Icon from "@ui/icons/Icon.astro";
 
 // Hero
@@ -115,7 +115,7 @@ const infoSection = {
 };
 ---
 
-<BaseLayout>
+<Layout>
   <section class="bg-linear-to-tl/oklch from-teal-200 via-transparent to-white">
     <div class="mx-auto max-w-[85rem] px-4 pb-12 pt-40 sm:px-6 lg:px-8">
       <div class="max-w-7xl">
@@ -257,4 +257,4 @@ const infoSection = {
       </div>
     </div>
   </section>
-</BaseLayout>
+</Layout>

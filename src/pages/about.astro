@@ -1,6 +1,6 @@
 ---
 export const prerender = true;
-import BaseLayout from "@layout/BaseLayout.astro";
+import Layout from "@layout/Layout.astro";
 import type { WithContext, Thing } from "schema-dts";
 
 // Data describing the "About" section content
@@ -70,7 +70,7 @@ const schema: WithContext<Thing> = {
 };
 ---
 
-<BaseLayout seo={seo} schema={schema}>
+<Layout seo={seo} schema={schema}>
   <section class="mx-auto max-w-[85rem] px-4 pb-12 pt-48 sm:px-6 lg:px-8">
     <div class="max-w-7xl">
       <div class="mx-auto max-w-2xl lg:mx-0">
@@ -158,4 +158,4 @@ const schema: WithContext<Thing> = {
       pointer-events: none;
     }
   </style>
-</BaseLayout>
+</Layout>

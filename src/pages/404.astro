@@ -1,6 +1,6 @@
 ---
 export const prerender = true;
-import BaseLayout from "@layout/BaseLayout.astro";
+import Layout from "@layout/Layout.astro";
 import Icon from "@ui/icons/Icon.astro";
 import Button from "@ui/Button.astro";
 import type { WithContext, Thing } from "schema-dts";
@@ -64,7 +64,7 @@ const schema: WithContext<Thing> = {
 };
 ---
 
-<BaseLayout seo={seo} schema={schema}>
+<Layout seo={seo} schema={schema}>
   <section
     class="grid min-h-full place-items-center px-6 pb-10 pt-32 sm:pt-48 lg:px-8"
   >
@@ -129,4 +129,4 @@ const schema: WithContext<Thing> = {
       });
     });
   </script>
-</BaseLayout>
+</Layout>

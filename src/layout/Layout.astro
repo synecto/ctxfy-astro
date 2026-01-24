@@ -1,5 +1,6 @@
 ---
 import LandingNav from "@sections/LandingNav.astro";
+import Breadcrumbs from "@ui/Breadcrumbs.astro";
 import LandingFooter from "@sections/LandingFooter.astro";
 import { ClientRouter } from "astro:transitions";
 import { SEO, type Props as SEOProps } from "astro-seo";
@@ -1107,6 +1108,7 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
   <body class="landing-body">
     <div class="landing">
       <LandingNav />
+      <Breadcrumbs />
       <slot />
       <LandingFooter />
     </div>

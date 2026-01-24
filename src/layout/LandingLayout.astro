@@ -263,9 +263,8 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
 
       .mega-menu {
         position: absolute;
-        top: calc(100% + 8px);
-        left: 50%;
-        transform: translate(-50%, 0);
+        top: calc(100% - 8px);
+        left: 0;
         width: min(1100px, 92vw);
         background: var(--mega-bg);
         border: 2px solid var(--landing-border);
@@ -293,7 +292,7 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
       .nav-item.has-mega:focus-within .mega-menu {
         opacity: 1;
         pointer-events: auto;
-        transform: translate(-50%, 0);
+        transform: translate(0, 0);
       }
 
       /* Ensure content doesn't overlap with sticky nav */

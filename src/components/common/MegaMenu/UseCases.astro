@@ -28,7 +28,7 @@ if (!useCasesMenu || useCasesMenu.length === 0) {
 ---
 
 <div
-  class="hs-dropdown [--adaptive:none] [--is-collapse:true] [--strategy:static] xl:[--is-collapse:false] xl:[--strategy:absolute] xl:[--trigger:hover]"
+  class="hs-dropdown relative [--adaptive:none] [--is-collapse:true] [--strategy:static] xl:[--is-collapse:false] xl:[--strategy:absolute] xl:[--trigger:hover]"
 >
   <button
     id="mega-menu-use-cases"
@@ -44,7 +44,7 @@ if (!useCasesMenu || useCasesMenu.length === 0) {
   </button>
 
   <div
-    class="hs-dropdown-menu relative start-0 top-full z-[60] mt-2 hidden min-w-60 opacity-0 transition-[opacity,margin] duration-150 before:absolute before:-top-5 before:start-0 before:h-5 before:w-full hs-dropdown-open:opacity-100 xl:left-0 xl:duration-300"
+    class="hs-dropdown-menu absolute start-0 top-full z-[60] mt-2 hidden min-w-60 opacity-0 transition-[opacity,margin] duration-150 before:absolute before:-top-5 before:start-0 before:h-5 before:w-full hs-dropdown-open:opacity-100 xl:left-0 xl:duration-300"
     role="menu"
     aria-orientation="vertical"
     aria-labelledby="mega-menu-use-cases"

@@ -3,6 +3,7 @@
 import Support from "@megaMenu/Support.astro";
 import Platform from "@megaMenu/Platform.astro";
 import Features from "@megaMenu/Features.astro";
+import UseCases from "@megaMenu/UseCases.astro";
 import Button from "@ui/Button.astro";
 import { getNavigationData } from "@lib/query/navigation";
 
@@ -109,6 +110,8 @@ const primaryCTA = navigationData?.primaryCTA || {
               <Features />
 
               <Platform />
+
+              <UseCases />
 
               <Support />
 

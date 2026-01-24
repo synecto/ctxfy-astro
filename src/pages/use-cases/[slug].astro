@@ -125,7 +125,7 @@ const useCase = await sanityClient.fetch(
                     <ul>
                         {useCase.relatedUseCases.map((r: any) => (
                                 <li>
-                                    <a href={`/use-cases/${r.slug}/`}>{r.title}</a>
+                                    <a href={`/use-cases/${r.slug}`}>{r.title}</a>
                                 </li>
                         ))}
                     </ul>

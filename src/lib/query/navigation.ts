@@ -47,6 +47,17 @@ export const navigationQuery = groq`*[_type=="navigationSettings"][0]{
       }
     }
   },
+  useCasesMenu{
+    sections[]{
+      sectionTitle,
+      items[]{
+        label,
+        href,
+        icon,
+        description
+      }
+    }
+  },
   primaryCTA{
     text,
     href

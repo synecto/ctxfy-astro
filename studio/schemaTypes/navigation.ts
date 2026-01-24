@@ -133,6 +133,11 @@ export const navigationSettings = defineType({
       type: 'navigationDownloadsMenu',
     }),
     defineField({
+      name: 'useCasesMenu',
+      title: 'Use Cases Menu',
+      type: 'navigationFeaturesMenu',
+    }),
+    defineField({
       name: 'primaryCTA',
       title: 'Primary CTA Button',
       type: 'object',

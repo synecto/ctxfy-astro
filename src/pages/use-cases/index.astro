@@ -75,7 +75,7 @@ function safeText(s?: string) {
                             data-stake={uc.stakes || "unknown"}
                             data-slug={uc.slug}
                     >
-                        <a class="uc-card-link" href={`/use-cases/${uc.slug}/`} aria-label={`Open ${uc.title}`}>
+                        <a class="uc-card-link" href={`/use-cases/${uc.slug}`} aria-label={`Open ${uc.title}`}>
                             <div class="uc-card-top">
                                 <div class="uc-meta">
                                     <span class={`uc-badge stake-${uc.stakes || "unknown"}`}>{uc.stakes || "unknown"}</span>

@@ -8,7 +8,6 @@ const navigationData = await getNavigationData();
 
 // Use Sanity data or fallback to static data
 const featuresMenu = navigationData?.featuresMenu?.sections || fallbackFeaturesMenu;
-const sectionDescription = "Discover how DataNova can empower your business";
 ---
 
 <div
@@ -17,54 +16,60 @@ const sectionDescription = "Discover how DataNova can empower your business";
   <button
     id="mega-menu-features"
     type="button"
-    class={`hs-dropdown-toggle flex w-full items-center rounded-lg p-2 font-medium text-slate-800 hover:bg-slate-100 focus:bg-slate-100 focus:outline-hidden ${
-      currentPath.startsWith("/features") ? "underline underline-offset-4" : ""
+    class={`hs-dropdown-toggle flex w-full items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 focus:outline-hidden ${
+      currentPath.startsWith("/features") ? "text-slate-900" : ""
     }`}
     aria-haspopup="menu"
     aria-expanded="false"
-    aria-label="Mega Menu"
+    aria-label="Features Menu"
   >
-    Features <Icon name="arrowDownRight" />
+    Features <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
   </button>
 
   <div
-    class="hs-dropdown-menu relative start-0 top-full z-[60] mt-2 hidden w-full min-w-60 max-w-(--breakpoint-md) opacity-0 transition-[opacity,margin] duration-150 before:absolute before:-top-5 before:start-0 before:h-5 before:w-full hs-dropdown-open:opacity-100 xl:left-1/2 xl:-translate-x-1/2 xl:duration-300"
+    class="hs-dropdown-menu relative start-0 top-full z-[60] mt-2 hidden min-w-60 opacity-0 transition-[opacity,margin] duration-150 before:absolute before:-top-5 before:start-0 before:h-5 before:w-full hs-dropdown-open:opacity-100 xl:left-0 xl:duration-300"
     role="menu"
     aria-orientation="vertical"
     aria-labelledby="mega-menu-features"
   >
     <div
-      class="from-teal-100 via-transparent to-white px-4 py-2 lg:mx-8 xl:mx-6 xl:rounded-lg xl:bg-white xl:bg-linear-to-t/oklch xl:px-16 xl:py-10 xl:shadow-lg xl:ring-1 xl:ring-teal-950/5"
+      class="rounded-xl border border-slate-200 bg-white p-2 shadow-xl ring-1 ring-slate-950/5 xl:w-[480px]"
     >
-      <p class="text-sm text-slate-600">
-        {sectionDescription}
-      </p>
-      <hr class="mb-5 border border-teal-300" />
-
-      <div class="gap-4 py-1 md:grid md:grid-cols-2 md:p-2">
+      <div class="grid gap-1 p-2">
         {
           featuresMenu.map((section) => (
-            <div class="flex flex-col">
-              <p class="text-sm text-slate-600">{section.sectionTitle}</p>
+            <div class="flex flex-col gap-1">
+              <p class="px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                {section.sectionTitle}
+              </p>
 
               {section.items.map((item) => (
                 <a
-                  class="flex gap-x-4 rounded-lg p-3 hover:bg-slate-100 focus:bg-slate-100 focus:outline-hidden"
+                  class="group flex items-start gap-4 rounded-lg p-3 transition-colors hover:bg-slate-50 focus:bg-slate-50 focus:outline-hidden"
                   href={item.href}
                 >
-                  {item.icon && <Icon name={item.icon} class="mt-1 size-5 shrink-0 text-slate-800" />}
+                  <div class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-xs group-hover:border-slate-300">
+                    {item.icon && <Icon name={item.icon} class="size-5 text-slate-600 group-hover:text-slate-900" />}
+                  </div>
 
                   <div class="grow">
-                    <p class="text-sm font-medium text-slate-800">
+                    <p class="text-sm font-medium text-slate-900">
                       {item.label || item.title}
                     </p>
-                    {item.description && <p class="text-sm text-slate-500">{item.description}</p>}
+                    {item.description && <p class="mt-0.5 text-xs text-slate-500 line-clamp-1">{item.description}</p>}
                   </div>
                 </a>
               ))}
             </div>
           ))
         }
+      </div>
+      
+      <div class="mt-2 border-t border-slate-100 bg-slate-50/50 p-3 rounded-b-lg">
+        <a href="/features" class="flex items-center justify-between text-xs font-medium text-slate-600 hover:text-slate-900">
+          Explore all features
+          <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
       </div>
     </div>
   </div>

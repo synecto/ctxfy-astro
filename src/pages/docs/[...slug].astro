@@ -41,7 +41,7 @@ const doc = (await sanityClient.fetch(
     category: { title: "Getting Started", slug: "getting-started" }
 } : null);
 
-if (!doc) return Astro.redirect("/docs/");
+if (!doc) return Astro.redirect("/docs");
 
 // Sidebar: all categories + docs
 const categories = (await sanityClient.fetch(groq`*[_type=="docCategory" && defined(slug.current)]
@@ -59,7 +59,7 @@ const docs = (await sanityClient.fetch(groq`*[_type=="doc" && defined(slugPath)]
 }`)) || [{ title: "Introduction", slugPath: ["introduction"], category: { slug: "getting-started", title: "Getting Started" } }];
 
 function toPath(p: string[]) {
-    return "/docs/" + p.map(encodeURIComponent).join("/") + "/";
+    return "/docs/" + p.map(encodeURIComponent).join("/");
 }
 
 const html = toHTML(doc.body || []);
@@ -71,7 +71,7 @@ const seoDesc = doc.meta?.seoDescription || doc.summary || "Documentation page."
     <main class="wrap">
         <aside class="side">
             <div class="side-top">
-                <a class="side-home" href="/docs/" data-track="docs_nav_home">Docs</a>
+                <a class="side-home" href="/docs" data-track="docs_nav_home">Docs</a>
                 <input id="q" class="side-q" placeholder="Search…" />
             </div>
 

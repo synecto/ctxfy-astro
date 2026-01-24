@@ -173,6 +173,15 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
         border-top: 8px solid black;
         background: var(--landing-surface);
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      /* Прижимаем футер: контент между навом и футером должен расти */
+      .landing > :global(main),
+      .landing > :global(div:not(.nav-wrapper):not(.footer)) {
+        flex: 1;
       }
 
       .container {
@@ -182,7 +191,16 @@ const canonicalUrl = canonical ? canonical : `${url.origin}${url.pathname}`;
       }
 
       .nav-wrapper {
-        background: #fff;
+        background: var(--nav-bg, #fff);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+
+      #home > section {
+        min-height: 100vh;
+        display: grid;
+        align-items: center;
       }
 
       .nav-bar {

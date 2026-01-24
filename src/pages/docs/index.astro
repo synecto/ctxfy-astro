@@ -19,7 +19,7 @@ const docs = (await sanityClient.fetch(groq`*[_type=="doc" && defined(slugPath)]
 }`)) || [{ title: "Introduction", slugPath: ["introduction"], summary: "Welcome to Ctxfy.", category: { slug: "getting-started", title: "Getting Started" } }];
 
 function toPath(slugPath: string[]) {
-    return "/docs/" + slugPath.map(encodeURIComponent).join("/") + "/";
+    return "/docs/" + slugPath.map(encodeURIComponent).join("/");
 }
 ---
 

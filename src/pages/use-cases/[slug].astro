@@ -10,7 +10,7 @@ export async function getStaticPaths() {
 
 const { slug } = Astro.params;
 
-const useCase = await sanityClient.fetch(
+const useCase = (await sanityClient.fetch(
     groq`*[_type=="useCase" && slug.current==$slug][0]{
     title,
     "slug": slug.current,
@@ -41,55 +41,71 @@ const useCase = await sanityClient.fetch(
     }
   }`,
     { slug }
-);
+)) || {
+    title: "Use Case",
+    heroHeadline: "Ready to solve your challenges",
+    subheadline: "Ctxfy helps you navigate complex workflows with ease.",
+    momentBullets: ["Difficulty in tracking", "Context loss", "Manual errors"],
+    stakes: "high",
+    howItWorks: [
+        { title: "Step 1", description: "Integrate Ctxfy into your workflow." },
+        { title: "Step 2", description: "Analyze your context data." },
+        { title: "Step 3", description: "Optimize and scale." }
+    ],
+    primaryCta: { label: "Get Started", href: "/signup" }
+};
 ---
 
 <Layout title={useCase?.title ?? "Use case"}>
-    <main data-use-case={useCase.slug}>
+    <main class="container section" style="padding-top: 120px;" data-use-case={useCase?.slug}>
         <section>
-            <h1>{useCase.heroHeadline}</h1>
-            <p>{useCase.subheadline}</p>
+            <h1 class="section-title">{useCase?.heroHeadline}</h1>
+            <p class="section-copy">{useCase?.subheadline}</p>
 
-            <div>
-                <a href={useCase.primaryCta.href} data-cta="primary">{useCase.primaryCta.label}</a>
-                {useCase.secondaryCta?.href && (
-                        <a href={useCase.secondaryCta.href} data-cta="secondary">{useCase.secondaryCta.label}</a>
+            <div style="display: flex; gap: 12px; margin-bottom: 32px;">
+                {useCase?.primaryCta?.href && (
+                    <a href={useCase.primaryCta.href} class="btn-primary">{useCase.primaryCta.label}</a>
+                )}
+                {useCase?.secondaryCta?.href && (
+                    <a href={useCase.secondaryCta.href} class="nav-pill">{useCase.secondaryCta.label}</a>
                 )}
             </div>
 
-            {useCase.proofPoints?.length ? (
-                    <ul>
-                        {useCase.proofPoints.map((p: string) => <li>{p}</li>)}
+            {useCase?.proofPoints?.length ? (
+                    <ul class="feature-row" style="list-style: none; padding: 0;">
+                        {useCase.proofPoints.map((p: string) => (
+                            <li class="feature-pill">
+                                <span class="feature-icon">✓</span>
+                                {p}
+                            </li>
+                        ))}
                     </ul>
             ) : null}
         </section>
 
-        <section>
-            <h2>When this hits</h2>
-            <ul>
-                {useCase.momentBullets?.map((b: string) => <li>{b}</li>)}
-            </ul>
-            <p><strong>Stakes:</strong> {useCase.stakes}</p>
-        </section>
-
-        <section>
-            <h2>Value in {useCase.timeToValue}</h2>
-            <p><strong>Aha:</strong> {useCase.ahaMoment}</p>
-            <ol>
-                {useCase.firstRunChecklist?.map((s: string) => <li>{s}</li>)}
-            </ol>
-        </section>
-
-        <section>
-            <h2>How it works</h2>
-            <ol>
-                {useCase.howItWorks?.map((s: any) => (
-                        <li>
-                            <strong>{s.title}</strong>
-                            <p>{s.description}</p>
-                        </li>
+        <section class="section">
+            <h2 class="section-title">When this hits</h2>
+            <ul class="offer-grid" style="list-style: none; padding: 0;">
+                {useCase?.momentBullets?.map((b: string) => (
+                    <li class="offer-card">
+                        <p class="offer-text">{b}</p>
+                    </li>
                 ))}
-            </ol>
+            </ul>
+            <p style="margin-top: 24px;"><strong>Stakes:</strong> <span class="pricing-badge">{useCase?.stakes}</span></p>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">How it works</h2>
+            <div class="offer-grid">
+                {useCase?.howItWorks?.map((s: any, idx: number) => (
+                        <div class="offer-card">
+                            <div class="brand-badge" style="margin-bottom: 12px;">{idx + 1}</div>
+                            <h3 class="offer-title">{s.title}</h3>
+                            <p class="offer-text">{s.description}</p>
+                        </div>
+                ))}
+            </div>
         </section>
 
         {useCase.evidenceBlocks?.length ? (

@@ -2,12 +2,16 @@
 import { sanityClient } from "@lib/sanityClient";
 import groq from "groq";
 
-const useCases = await sanityClient.fetch(
+const useCases = (await sanityClient.fetch(
   groq`*[_type=="useCase" && defined(slug.current)]{ title, "slug": slug.current, subheadline }`
-);
+)) || [
+  { title: "Financial Services", slug: "financial-services", subheadline: "Personalize banking" },
+  { title: "B2B", slug: "b2b", subheadline: "Maximize adoption" },
+  { title: "Media", slug: "media", subheadline: "Impactful content" }
+];
 ---
 
-<header class="nav-wrapper reveal fade">
+<header class="nav-wrapper">
   <div class="nav-bar">
     <a
       class="brand"
@@ -302,7 +306,7 @@ const useCases = await sanityClient.fetch(
 
         <a
           class="nav-link"
-          href="/docs/"
+          href="/docs"
           data-track="nav_click"
           data-track-props='{"item":"resources"}'
         >

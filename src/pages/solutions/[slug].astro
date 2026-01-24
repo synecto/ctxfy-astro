@@ -1,0 +1,73 @@
+---
+import Layout from "@/layout/Layout.astro";
+
+export async function getStaticPaths() {
+  // Hardcoded list of solutions from LandingNav.astro
+  const solutions = [
+    "financial-services",
+    "b2b",
+    "media",
+    "healthcare",
+    "ecommerce",
+    "acquisition",
+    "retention",
+    "monetization",
+    "product",
+    "data",
+    "engineering",
+    "marketing",
+    "executive",
+    "startups",
+    "enterprise",
+  ];
+  return solutions.map((slug) => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+
+// Formatting slug for display
+const title = slug
+  .split("-")
+  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+  .join(" ");
+---
+
+<Layout title={`${title} Solutions | Ctxfy`}>
+  <main class="container section">
+    <h1 class="section-title">{title} Solutions</h1>
+    <p class="section-copy">
+      Discover how Ctxfy helps teams optimize their {title.toLowerCase()} strategies and drive better business outcomes.
+    </p>
+    
+    <div class="illustration-card" style="margin-bottom: 40px;"></div>
+
+    <section style="display: grid; gap: 32px;">
+      <div>
+        <h2 class="section-title">Why choose Ctxfy for {title}?</h2>
+        <p class="section-copy">
+          Ctxfy provides the tools and insights needed to understand user behavior, 
+          personalize experiences, and make data-driven decisions that impact your bottom line.
+        </p>
+      </div>
+      
+      <div class="offer-grid">
+        <div class="offer-card">
+          <h3 class="offer-title">Deep Insights</h3>
+          <p class="offer-text">Understand every aspect of your {title.toLowerCase()} metrics.</p>
+        </div>
+        <div class="offer-card">
+          <h3 class="offer-title">Real-time Data</h3>
+          <p class="offer-text">Act on insights as they happen with our real-time processing engine.</p>
+        </div>
+        <div class="offer-card">
+          <h3 class="offer-title">Team Collaboration</h3>
+          <p class="offer-text">Bring your whole team together around shared goals and data.</p>
+        </div>
+      </div>
+    </section>
+
+    <div style="margin-top: 64px;">
+        <a href="/#contact" class="btn-primary">Request a Demo</a>
+    </div>
+  </main>
+</Layout>

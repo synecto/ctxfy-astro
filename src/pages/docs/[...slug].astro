@@ -7,7 +7,7 @@ import { toHTML } from "@portabletext/to-html";
 const slugParam = Astro.params.slug;
 const slugPath = Array.isArray(slugParam) ? slugParam : [slugParam];
 
-const doc = await sanityClient.fetch(
+const doc = (await sanityClient.fetch(
     groq`*[_type=="doc" && slugPath==$slugPath][0]{
     title,
     summary,
@@ -26,24 +26,37 @@ const doc = await sanityClient.fetch(
     meta{seoTitle, seoDescription}
   }`,
     { slugPath }
-);
+)) || (slugPath[0] === "introduction" ? {
+    title: "Introduction",
+    summary: "Welcome to Ctxfy documentation.",
+    body: [
+        {
+            _type: "block",
+            children: [{ _type: "span", text: "Ctxfy is a platform for debugging and context tracing in RAG applications." }],
+            markDefs: [],
+            style: "normal"
+        }
+    ],
+    slugPath: ["introduction"],
+    category: { title: "Getting Started", slug: "getting-started" }
+} : null);
 
 if (!doc) return Astro.redirect("/docs/");
 
 // Sidebar: all categories + docs
-const categories = await sanityClient.fetch(groq`*[_type=="docCategory" && defined(slug.current)]
+const categories = (await sanityClient.fetch(groq`*[_type=="docCategory" && defined(slug.current)]
 | order(order asc, title asc){
   title,
   "slug": slug.current,
   order
-}`);
+}`)) || [{ title: "Getting Started", slug: "getting-started", order: 0 }];
 
-const docs = await sanityClient.fetch(groq`*[_type=="doc" && defined(slugPath)]
+const docs = (await sanityClient.fetch(groq`*[_type=="doc" && defined(slugPath)]
 | order(order asc, title asc){
   title,
   slugPath,
   category->{"slug": slug.current, title}
-}`);
+}`)) || [{ title: "Introduction", slugPath: ["introduction"], category: { slug: "getting-started", title: "Getting Started" } }];
 
 function toPath(p: string[]) {
     return "/docs/" + p.map(encodeURIComponent).join("/") + "/";

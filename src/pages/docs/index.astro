@@ -3,27 +3,27 @@ import groq from "groq";
 import Layout from "@/layout/Layout.astro";
 import { sanityClient } from "@lib/sanityClient.ts";
 
-const categories = await sanityClient.fetch(groq`*[_type=="docCategory" && defined(slug.current)]
+const categories = (await sanityClient.fetch(groq`*[_type=="docCategory" && defined(slug.current)]
 | order(order asc, title asc){
   title,
   "slug": slug.current,
   description
-}`);
+}`)) || [{ title: "Getting Started", slug: "getting-started", description: "Get up and running with Ctxfy." }];
 
-const docs = await sanityClient.fetch(groq`*[_type=="doc" && defined(slugPath)]
+const docs = (await sanityClient.fetch(groq`*[_type=="doc" && defined(slugPath)]
 | order(order asc, title asc){
   title,
   slugPath,
   summary,
   category->{"slug": slug.current, title}
-}`);
+}`)) || [{ title: "Introduction", slugPath: ["introduction"], summary: "Welcome to Ctxfy.", category: { slug: "getting-started", title: "Getting Started" } }];
 
 function toPath(slugPath: string[]) {
     return "/docs/" + slugPath.map(encodeURIComponent).join("/") + "/";
 }
 ---
 
-<Layout title="Docs — Cerses" description="Documentation: quickstart, integration, tracing, and debugging workflows.">
+<Layout title="Docs | Ctxfy" description="Documentation: quickstart, integration, tracing, and debugging workflows.">
     <main class="p">
         <header class="head">
             <h1>Docs</h1>

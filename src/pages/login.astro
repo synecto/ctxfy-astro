@@ -1,0 +1,25 @@
+---
+import Layout from "@/layout/Layout.astro";
+---
+
+<Layout title="Login | Ctxfy">
+  <main class="container section" style="display: grid; place-items: center; min-height: 60vh;">
+    <div class="hero-card" style="width: 100%; max-width: 400px; padding: 40px;">
+      <h1 class="section-title" style="text-align: center; margin-bottom: 32px;">Welcome Back</h1>
+      <form style="display: grid; gap: 20px;">
+        <div>
+          <label class="footer-note" for="email">Email</label>
+          <input class="input" type="email" id="email" placeholder="name@company.com" required />
+        </div>
+        <div>
+          <label class="footer-note" for="password">Password</label>
+          <input class="input" type="password" id="password" placeholder="••••••••" required />
+        </div>
+        <button class="btn-primary" type="submit" style="width: 100%; margin-top: 12px;">Sign In</button>
+      </form>
+      <div style="margin-top: 24px; text-align: center; font-size: 14px; color: var(--landing-muted);">
+        Don't have an account? <a href="/#get-started" style="color: var(--landing-ink); font-weight: 700;">Get started</a>
+      </div>
+    </div>
+  </main>
+</Layout>

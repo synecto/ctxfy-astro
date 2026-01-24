@@ -4,7 +4,7 @@ import Layout from "@/layout/Layout.astro";
 import { sanityClient } from "@lib/sanityClient.ts";
 
 // 1) Достаём use-cases для карточек
-const useCases = await sanityClient.fetch(groq`*[_type=="useCase" && defined(slug.current)]
+const useCases = (await sanityClient.fetch(groq`*[_type=="useCase" && defined(slug.current)]
 | order(_createdAt desc) {
   title,
   "slug": slug.current,
@@ -14,7 +14,18 @@ const useCases = await sanityClient.fetch(groq`*[_type=="useCase" && defined(slu
   timeToValue,
   proofPoints,
   momentBullets
-}`);
+}`)) || [
+  {
+    title: "Financial Services",
+    slug: "financial-services",
+    heroHeadline: "Personalize the banking experience",
+    subheadline: "Drive deeper customer engagement with AI-powered insights.",
+    stakes: "high",
+    timeToValue: "< 1 week",
+    momentBullets: ["Customer churn increases", "Personalization is missing"],
+    proofPoints: ["15% lift in engagement"]
+  }
+];
 
 // 2) Собираем простые "теги" для фильтра — по stakes (и можно расширить позже)
 const STAKES = ["low", "medium", "high", "critical"];

@@ -3,7 +3,7 @@ import groq from "groq";
 import Layout from "@/layout/Layout.astro";
 import { sanityClient } from "@lib/sanityClient.ts";
 
-const pricing = await sanityClient.fetch(groq`*[_type=="pricingPage"][0]{
+const pricing = (await sanityClient.fetch(groq`*[_type=="pricingPage"][0]{
   title, description,
   hero{headline, subheadline, billingDefault},
   plans[]{
@@ -15,13 +15,42 @@ const pricing = await sanityClient.fetch(groq`*[_type=="pricingPage"][0]{
   },
   comparison{rows[]{feature, values}},
   faq[]{q, a}
-}`);
-
-if (!pricing) {
-    // If the singleton isn't created yet, redirect so you notice quickly.
-    // (You can remove this once created.)
-    return Astro.redirect("/docs/");
-}
+}`)) || {
+  title: "Pricing | Ctxfy",
+  description: "Transparent pricing for debugging and context tracing.",
+  hero: {
+    headline: "Plans for every team",
+    subheadline: "Start free, then scale as you grow.",
+    billingDefault: "monthly"
+  },
+  plans: [
+    {
+      name: "Starter",
+      description: "Perfect for hobbyists and solo developers.",
+      price: { monthly: "$0", yearly: "$0" },
+      features: ["Up to 1,000 traces", "7-day retention", "Community support"],
+      cta: { label: "Get Started", href: "/signup" },
+      isPrimary: false
+    },
+    {
+      name: "Pro",
+      badge: "Popular",
+      description: "Advanced features for professional teams.",
+      price: { monthly: "$49", yearly: "$39" },
+      features: ["Unlimited traces", "30-day retention", "Priority email support", "Custom alerts"],
+      cta: { label: "Try Pro", href: "/signup" },
+      isPrimary: true
+    },
+    {
+      name: "Enterprise",
+      description: "Custom solutions for large organizations.",
+      price: { monthly: "Custom", yearly: "Custom" },
+      features: ["Unlimited everything", "Year-long retention", "Dedicated account manager", "SSO & SAML"],
+      cta: { label: "Contact Sales", href: "/contact" },
+      isPrimary: false
+    }
+  ]
+};
 
 const plans = pricing.plans || [];
 ---
